@@ -1,0 +1,48 @@
+{
+  "scopeName": "source.bit-peek",
+  "fileTypes": [
+    "bit-peek"
+  ],
+  "patterns": [
+    {
+      "match": "(?<=Hex: )[0-9A-Fa-f ]+",
+      "name": "constant.numeric.hex"
+    },
+    {
+      "match": "(?<=Dec: )[\\d,-]+",
+      "name": "constant.numeric.dec"
+    },
+    {
+      "match": "(?<=\\) / )[\\d,-]+",
+      "name": "constant.numeric.dec"
+    },
+    {
+      "match": "([0-9]+-bit|[0-9,.]+ [\\w]*B)",
+      "name": "string.quoted"
+    },
+    {
+      "match": "(?<=Str: )[\\S ]+",
+      "name": "string.quoted"
+    },
+    {
+      "match": "(Hex|Dec|Str|Size|Bin|UNIX|File|Permission)",
+      "name": "keyword.other"
+    },
+    {
+      "match": "---\\+|-----|----",
+      "name": "string.quoted"
+    },
+    {
+      "match": "(\\s{3,5}\\d{1,2})+\\s",
+      "name": "comment"
+    },
+    {
+      "match": "(User|Group|Other)",
+      "name": "comment"
+    },
+    {
+      "match": "\\[.*\\]",
+      "name": "comment"
+    }
+  ]
+}

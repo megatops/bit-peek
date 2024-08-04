@@ -1,26 +1,118 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+// Bit Peek for Visual Studio Code
+//
+// Copyright (C) 2024 Ding Zhaojie <zhaojie_ding@msn.com>
+
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+import {BaseConv} from './base_conv';
+import {bitsLabel, bitsRuler, groupBy} from "./utils";
+import {parseHexdump, parseNumber} from "./parser";
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "hover-bits" is now active!');
+let forceHex = bitPeekCfg('forceHex');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('hover-bits.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Hover Bits!');
-	});
-
-	context.subscriptions.push(disposable);
+function bitPeekCfg(cfg: string): boolean {
+    return !!vscode.workspace.getConfiguration('bit-peek').get(cfg);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+function parseText(str: string): BaseConv | null {
+    return forceHex ? parseHexdump(str) : parseNumber(str);
+}
+
+function binInfo1Row(binStr: string, width: number, lsb0: boolean): string {
+    return `Bin: ${groupBy(binStr, 4)}\n` +
+        `     ${groupBy(bitsRuler(width, 4, lsb0), 4)}\n` +
+        `     ${groupBy(bitsLabel(width, 4, 0, lsb0), 4)}`;
+}
+
+function binInfo2Rows(binStr: string, width: number, lsb0: boolean): string {
+    const w = width / 2;
+    const bins = groupBy(binStr, w).split(' ');
+    const ruler = groupBy(bitsRuler(w, 4, lsb0), 4);
+
+    return `Bin: ${groupBy(bitsLabel(w, 4, lsb0 ? w : 0, lsb0), 4)}\n` +
+        `     ${ruler}\n` +
+        `     ${groupBy(bins[0], 4)}\n` +
+        `     ${groupBy(bins[1], 4)}\n` +
+        `     ${ruler}\n` +
+        `     ${groupBy(bitsLabel(w, 4, lsb0 ? 0 : w, lsb0), 4)}`;
+}
+
+export function binInfo(v: BaseConv, lsb0: boolean, regView: boolean, maxWidth = 32): string {
+    let binStr = v.toBin();
+    if (regView) {
+        binStr = binStr.replace(/0/g, '.');
+    }
+    return (v.width > maxWidth)
+        ? binInfo2Rows(binStr, v.width, lsb0)
+        : binInfo1Row(binStr, v.width, lsb0);
+}
+
+export function permInfo(v: BaseConv): string | null {
+    let perm = v.toPerm(' ');
+    if (perm !== null) {
+        return 'File Permission:\n' +
+            `  ${groupBy(perm, 6)}\n` +
+            '  -----  -----  -----\n' +
+            '  User   Group  Other';
+    }
+    return null;
+}
+
+export function hexInfo(v: BaseConv): string {
+    return `Hex: ${groupBy(v.toHex(), 4)} (${v.width}-bit)`;
+}
+
+export function strInfo(v: BaseConv): string {
+    return `Str:  ${groupBy(groupBy(v.toAscii(), 1), 4)}`;
+}
+
+export function decInfo(v: BaseConv): string {
+    return `Dec: ${v.toUint()} (${v.toGMK()})` + ((v.int < 0n) ? ` / ${v.toInt()}` : '');
+}
+
+function bitPeek(v: BaseConv): vscode.Hover {
+    const lsb0 = !bitPeekCfg('msb0');
+    const regView = bitPeekCfg('registerView');
+    let peek: string[] = Array();
+
+    const perm = (v.base === 8) ? permInfo(v) : null;
+    peek.push((perm !== null) ? perm : binInfo(v, lsb0, regView));
+    peek.push('');
+    peek.push(hexInfo(v));
+    peek.push(strInfo(v));
+    peek.push(decInfo(v));
+
+    if (forceHex) {
+        peek.push('\n[Force HEX Mode]');
+    }
+    return new vscode.Hover({
+        language: 'bit-peek',
+        value: peek.join('\n'),
+    });
+}
+
+export function activate(context: vscode.ExtensionContext) {
+    console.log('Bit Peek is now active.');
+
+    const hover = vscode.languages.registerHoverProvider({scheme: '*', language: '*'}, {
+        provideHover(doc, pos, _) {
+            try {
+                const v: BaseConv | null = parseText(doc.getText(doc.getWordRangeAtPosition(pos)));
+                return v ? bitPeek(v) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+    });
+
+    const cmd = vscode.commands.registerCommand('bit-peek.forceHex', () => {
+        forceHex = !forceHex;
+        vscode.window.showInformationMessage(`Bit Peek: force HEX mode is ${forceHex ? 'enabled' : 'disabled'}.`);
+    });
+
+    context.subscriptions.push(hover);
+    context.subscriptions.push(cmd);
+}
+
+export function deactivate() {
+}

@@ -1,22 +1,81 @@
 {
-  "name": "hover-bits",
-  "displayName": "Hover Bits",
-  "description": "Peek other forms of a number.",
+  "name": "bit-peek",
+  "displayName": "Bit Peek",
+  "description": "Display the binary and other forms of numbers in a very easy to read format.",
   "version": "0.0.1",
-  "publisher": "megatops",
+  "publisher": "dingzhaojie",
   "engines": {
-    "vscode": "^1.92.0"
+    "vscode": "^1.40.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "address",
+    "assembly",
+    "binary",
+    "bit",
+    "convert",
+    "converter",
+    "decimal",
+    "driver",
+    "embedded",
+    "hex",
+    "hover",
+    "inspector",
+    "kernel",
+    "peek",
+    "register"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/megatops/bit-peek.git"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "icon": "images/icon.drawio.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Bit Peek",
+      "properties": {
+        "bit-peek.registerView": {
+          "type": "boolean",
+          "default": true,
+          "description": "Display bits in register friendly view."
+        },
+        "bit-peek.msb0": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use MSB0 bit numbering (Motorola style)."
+        },
+        "bit-peek.forceHex": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable force HEX mode by default."
+        }
+      }
+    },
     "commands": [
       {
-        "command": "hover-bits.helloWorld",
-        "title": "Hello World"
+        "command": "bit-peek.forceHex",
+        "title": "Toggle force HEX mode",
+        "category": "Bit Peek"
+      }
+    ],
+    "languages": [
+      {
+        "id": "bit-peek"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bit-peek",
+        "scopeName": "source.bit-peek",
+        "path": "./syntax/bit-peek.json"
       }
     ]
   },
@@ -29,7 +88,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.92.0",
+    "@types/vscode": "^1.40.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
     "@typescript-eslint/eslint-plugin": "^7.14.1",

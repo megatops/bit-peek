@@ -1,71 +1,21 @@
-# hover-bits README
+# Bit Peek for Visual Studio Code
 
-This is the README for your extension "hover-bits". After writing up a brief description, we recommend including the following sections.
+Bit Peek can display the binary and other forms (hexadecimal, octal, ASCII) of numbers at mouse cursor in a very easy to read format.
 
-## Features
+By default, Bit Peek will show bits in a register friendly mode. In this mode, all `0`s will be displayed as `.`, so you can identify the `1`s at a glance:
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+![](images/hover.png)
 
-For example if there is an image subfolder under your extension project workspace:
+Both the bit representation and numbering style are customizable. Set `bit-peek.registerView` to `false` to back to the ordinary mode, set `bit-peek.msb0` to `true` to use MSB0 (Motorola style) bit numbering:
 
-\!\[feature X\]\(images/feature-x.png\)
+![](images/msb0.png)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Bit Peek will try to identify the base of numbers automatically. But if you are analyzing hex dumps, you can use `Bit Peek: Toggle force HEX mode` command to enforce parsing as hexadecimals:
 
-## Requirements
+![](images/hexdump.png)
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+If the number looks like an UNIX file permission, Bit Peek will interpret the bits as file permission:
 
-## Extension Settings
+![](images/perm.png)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Happy coding. :)

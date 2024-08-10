@@ -1,6 +1,6 @@
 # Bit Peek for Visual Studio Code
 
-Bit Peek can display the binary and other forms (hexadecimal, octal, ASCII) of numbers at mouse cursor in a very easy to read format.
+Bit Peek can display the binary and other forms (hexadecimal, octal, ASCII) of numbers at mouse cursor in a very easy to read format. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek).
 
 By default, Bit Peek will show bits in a register friendly mode. In this mode, all `0`s will be displayed as `.`, so you can identify the `1`s at a glance:
 

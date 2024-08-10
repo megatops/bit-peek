@@ -27,8 +27,8 @@ export function parseNumber(str: string): BaseConv | null {
     return parseTable(str, [
         // hex
         {re: /^0x(?<num>[\da-f_]+)(u?l{0,2}|n)?$/i, base: 16}, // C/C++/JS
-        {re: /^(#|h|sh)(?<num>[\da-f_]+)$/i, base: 16}, // css, verilog
-        {re: /^(?<num>[\da-f_]+)h$/i, base: 16}, // masm
+        {re: /^(#|0h|h|sh)(?<num>[\da-f_]+)$/i, base: 16}, // css, verilog
+        {re: /^(?<num>[\da-f_]+)h$/i, base: 16}, // nasm
 
         // oct
         {re: /^(0|0o)(?<num>[0-7_]+)(u?l{0,2}|n)?$/i, base: 8},
@@ -42,7 +42,7 @@ export function parseNumber(str: string): BaseConv | null {
 
         // dec, must be the last
         {re: /^(?<num>[+-]?[\d_]+)(u?l{0,2}|n)?$/i, base: 10},
-        {re: /^(d|sd)(?<num>[\d_]+)$/i, base: 10},
+        {re: /^(0d|d|sd)(?<num>[\d_]+)$/i, base: 10},
         {re: /^(?<num>[+-]?[\d_]+)d$/i, base: 10},
     ]);
 }
@@ -50,7 +50,7 @@ export function parseNumber(str: string): BaseConv | null {
 export function parseHexdump(str: string): BaseConv | null {
     return parseTable(str, [
         {re: /^(0x)?(?<num>[\da-f_]+)(u?l{0,2}|n)?$/i, base: 16},
-        {re: /^(#|h|sh)(?<num>[\da-f_]+)$/i, base: 16},
+        {re: /^(#|0h|h|sh)(?<num>[\da-f_]+)$/i, base: 16},
         {re: /^(?<num>[\da-f_]+)h$/i, base: 16},
     ]);
 }

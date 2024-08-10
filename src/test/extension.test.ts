@@ -2,9 +2,10 @@
 //
 // Copyright (C) 2024 Ding Zhaojie <zhaojie_ding@msn.com>
 
+import * as vscode from 'vscode';
 import * as assert from 'assert';
 
-import {binInfo, decInfo, hexInfo, permInfo, strInfo} from "../extension";
+import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo} from "../extension";
 import {BaseConv} from '../base_conv';
 import {bitsLabel, bitsRuler, groupBy} from "../utils";
 import {parseHexdump, parseNumber} from '../parser';
@@ -71,6 +72,12 @@ suite('Base Convertor Test Suite', () => {
         }, Error);
         assert.throws((): Number => {
             return (new BaseConv('-9223372036854775809')).size;
+        }, Error);
+        assert.throws((): Number => {
+            return (new BaseConv('')).size;
+        }, Error);
+        assert.throws((): Number => {
+            return (new BaseConv('-')).size;
         }, Error);
     });
 
@@ -249,6 +256,7 @@ suite('Extension Test Suite', () => {
 
         assert.strictEqual(parseNumber('#01af')?.toHex(), '01AF');
         assert.strictEqual(parseNumber('h01af')?.toHex(), '01AF');
+        assert.strictEqual(parseNumber('0h01af')?.toHex(), '01AF');
         assert.strictEqual(parseNumber('sh01af')?.toHex(), '01AF');
         assert.strictEqual(parseNumber('01afh')?.toHex(), '01AF');
         assert.strictEqual(parseNumber('01_afh')?.toHex(), '01AF');
@@ -303,6 +311,7 @@ suite('Extension Test Suite', () => {
         assert.strictEqual(parseNumber('-12_34n')?.int, -1234n);
 
         assert.strictEqual(parseNumber('d1234')?.uint, 1234n);
+        assert.strictEqual(parseNumber('0d1234')?.uint, 1234n);
         assert.strictEqual(parseNumber('sd1234')?.uint, 1234n);
         assert.strictEqual(parseNumber('1234d')?.uint, 1234n);
         assert.strictEqual(parseNumber('12_34d')?.uint, 1234n);
@@ -322,6 +331,7 @@ suite('Extension Test Suite', () => {
 
         assert.strictEqual(parseHexdump('#01af')?.toHex(), '01AF');
         assert.strictEqual(parseHexdump('h01af')?.toHex(), '01AF');
+        assert.strictEqual(parseHexdump('0h01af')?.toHex(), '01AF');
         assert.strictEqual(parseHexdump('sh01af')?.toHex(), '01AF');
         assert.strictEqual(parseHexdump('01afh')?.toHex(), '01AF');
         assert.strictEqual(parseHexdump('#11_1b')?.toHex(), '111B');
@@ -407,5 +417,27 @@ suite('Extension Test Suite', () => {
         assert.strictEqual(decInfo(new BaseConv('FF', 16)), 'Dec: 255 (255 B) / -1');
         assert.strictEqual(decInfo(new BaseConv('-1', 10)), 'Dec: 255 (255 B) / -1');
         assert.strictEqual(decInfo(new BaseConv('1024', 10)), 'Dec: 1,024 (1.000 KiB)');
+    });
+
+    test('Hover content test', () => {
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value,
+            'Bin: .... ....\n' +
+            '     ---+ ---+\n' +
+            '        4    0\n' +
+            '\n' +
+            'Hex: 00 (8-bit)\n' +
+            'Str:  .\n' +
+            'Dec: 0 (0 B)'
+        );
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('777', 8)).contents[0]).value,
+            'File Permission:\n' +
+            '  r w x  r w x  r w x\n' +
+            '  -----  -----  -----\n' +
+            '  User   Group  Other\n' +
+            '\n' +
+            'Hex: 01FF (16-bit)\n' +
+            'Str:  . .\n' +
+            'Dec: 511 (511 B)'
+        );
     });
 });

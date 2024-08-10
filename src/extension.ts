@@ -70,7 +70,7 @@ export function decInfo(v: BaseConv): string {
     return `Dec: ${v.toUint()} (${v.toGMK()})` + ((v.int < 0n) ? ` / ${v.toInt()}` : '');
 }
 
-function bitPeek(v: BaseConv): vscode.Hover {
+export function bitPeek(v: BaseConv): vscode.Hover {
     const lsb0 = !bitPeekCfg('msb0');
     const regView = bitPeekCfg('registerView');
     let peek: string[] = Array();

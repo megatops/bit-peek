@@ -1,0 +1,41 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="727px" height="727px" viewBox="-0.5 -0.5 727 727" content="&lt;mxfile&gt;&lt;diagram id=&quot;43aRHTy_4Pvu_pNIDvoX&quot; name=&quot;Page-1&quot;&gt;5ZlNd6IwFIZ/jct6CAlfW7WdbmbVxawzEiVnkHhirLa/fgIkmJjQ0lO0xxYXmjcfwnufXK44gfPN8RfH2+I3y0k5CYP8OIGLSRiCLAbyrVZeWiWOw1ZYc5qrQSfhib4SJQZK3dOc7KyBgrFS0K0tLllVkaWwNMw5O9jDVqy0v3WL18QRnpa4dNU/NBdFq6ZRcNIfCV0X+ptBoHo2WA9Wwq7AOTsYEryfwDlnTLSfNsc5KWvztC/tvIee3u7EOKnEkAkobWc843KvLk6dmHjRV7vmbL+dwBlnAgvKKqmiSLbVTMIFOfpsx3/1CoF7WqC7WEkJYRsi+Iscoha6g4maowiBSLUPJ7/jEE7TpJULw26k3cYqzOtu/ZMT8oMyw28MHGCM9KXKST0BSDsOBRXkaYuXde9Bgi+1QmxK1d1FOqgbgrN/ZM5KxpulIFrUr65HUyUtmq1oWRojH5pD6muOcyr9NPpmzcvoW1AuA9HGbMf29ZpOGDfsWUWqPk1OdvTVbNejjbbcysRsk5yaTTv0oKPEDH3H3Dk5vThAACwauiUMGoAmxEIBTNPs8zAMYEFOkNmHvM8B3m3blLSix5qdN1gwI5+TFd6XolaZFfNVc/h5iJujhweCd8ILXEcquFFaoAXLXZI5sHQpYvS8kV0PlYpV5GsocfLZOSUreYWPauANEIMSm5g4coiBSTiNXGYM+TPUIHRJbM7uIPE8vZ899OFkRzrqweJAGiw8NKFZDNMrZIrB1YiLRi8HsV103EWhywHyUYDGYCC6IgNvVREJwTFxq5QP8aGLjVuEILIh0MnBhAD6IIAjQAAH3D++pOx0bhJGX3t8w7IzsisJCNyyMwT+HyHxCLWErmjf/3E2/GL7fp31mgDCYJrYWwLBTjGdCD2bAkQjbAoQjrwpMF+qhwpRcIa6N8uBBkEP1M6G6raJdFlgWhGutp4nREFPiNxQWJXrZVgD8Q/3WLGdoWlmHsjh/GIRSH54BHQvsKvxL4zI2M+AbjUiqZ3/Mzf5XywEY9dDtx6CK3g+5BnGx2pQ11GP7z6TL2IljKeumeAyXupnUd/UyxRczcgBT0i+gZH9GXYcX2Xz9OdS02f8RQfv/wM=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="0%" y2="100%" id="mx-gradient-ffffff-1-b3b3b3-1-s-0">
+            <stop offset="0%" style="stop-color: rgb(255, 255, 255); stop-opacity: 1;"/>
+            <stop offset="100%" style="stop-color: rgb(179, 179, 179); stop-opacity: 1;"/>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="0%" id="mx-gradient-ffffff-1-666666-1-e-0">
+            <stop offset="0%" style="stop-color: rgb(255, 255, 255); stop-opacity: 1;"/>
+            <stop offset="100%" style="stop-color: rgb(102, 102, 102); stop-opacity: 1;"/>
+        </linearGradient>
+        <linearGradient x1="100%" y1="0%" x2="0%" y2="0%" id="mx-gradient-4b6385-1-6c8ebf-1-e-0">
+            <stop offset="0%" style="stop-color: rgb(108, 142, 191); stop-opacity: 1;"/>
+            <stop offset="100%" style="stop-color: rgb(75, 99, 133); stop-opacity: 1;"/>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="0%" y2="100%" id="mx-gradient-ffffff-1-7ea6e0-1-s-0">
+            <stop offset="0%" style="stop-color: rgb(255, 255, 255); stop-opacity: 1;"/>
+            <stop offset="100%" style="stop-color: rgb(126, 166, 224); stop-opacity: 1;"/>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="0%" y2="100%" id="mx-gradient-666666-1-333333-1-s-0">
+            <stop offset="0%" style="stop-color: rgb(102, 102, 102); stop-opacity: 1;"/>
+            <stop offset="100%" style="stop-color: rgb(51, 51, 51); stop-opacity: 1;"/>
+        </linearGradient>
+    </defs>
+    <g>
+        <rect x="363" y="411" width="140" height="41.89" rx="6.28" ry="6.28" fill="url(#mx-gradient-ffffff-1-b3b3b3-1-s-0)" stroke="#4d4d4d" stroke-width="2" transform="rotate(45,433,431.94)" pointer-events="none"/>
+        <ellipse cx="285" cy="284" rx="200" ry="200" fill="#000000" stroke="#000000" stroke-width="2" transform="translate(2,3)rotate(45,285,284)" pointer-events="none" opacity="0.25"/>
+        <ellipse cx="285" cy="284" rx="200" ry="200" fill="url(#mx-gradient-ffffff-1-666666-1-e-0)" stroke="#4d4d4d" stroke-width="2" transform="rotate(45,285,284)" pointer-events="none"/>
+        <ellipse cx="285.25" cy="284.25" rx="186.25" ry="186.25" fill="url(#mx-gradient-ffffff-1-666666-1-e-0)" stroke="none" transform="translate(285.25,0)scale(-1,1)translate(-285.25,0)rotate(-45,285.25,284.25)" pointer-events="none"/>
+        <ellipse cx="284.5" cy="283.5" rx="172.5" ry="172.5" fill="url(#mx-gradient-4b6385-1-6c8ebf-1-e-0)" stroke="none" transform="rotate(45,284.5,283.5)" pointer-events="none"/>
+        <ellipse cx="284.5" cy="283.5" rx="167.5" ry="167.5" fill="url(#mx-gradient-ffffff-1-7ea6e0-1-s-0)" stroke="none" transform="rotate(45,284.5,283.5)" pointer-events="none"/>
+        <rect x="405" y="481" width="213.87" height="60" rx="9" ry="9" fill="url(#mx-gradient-666666-1-333333-1-s-0)" stroke="#4d4d4d" stroke-width="2" transform="rotate(45,511.93,511)" pointer-events="none"/>
+        <rect x="162.75" y="216.75" width="60" height="40" rx="20" ry="20" fill="none" stroke="#666666" stroke-width="11" transform="rotate(90,192.75,236.75)" pointer-events="none"/>
+        <rect x="162.75" y="311.75" width="60" height="40" rx="20" ry="20" fill="none" stroke="#666666" stroke-width="11" transform="rotate(90,192.75,331.75)" pointer-events="none"/>
+        <rect x="279.75" y="311.75" width="60" height="40" rx="20" ry="20" fill="none" stroke="#666666" stroke-width="11" transform="rotate(90,309.75,331.75)" pointer-events="none"/>
+        <rect x="347.75" y="311.75" width="60" height="40" rx="20" ry="20" fill="none" stroke="#666666" stroke-width="11" transform="rotate(90,377.75,331.75)" pointer-events="none"/>
+        <rect x="347.75" y="216.75" width="60" height="40" rx="20" ry="20" fill="none" stroke="#666666" stroke-width="11" transform="rotate(90,377.75,236.75)" pointer-events="none"/>
+        <rect x="279.75" y="236.25" width="60" height="1" rx="0.15" ry="0.15" fill="none" stroke="rgb(0, 0, 0)" stroke-width="11" transform="rotate(90,309.75,236.75)" pointer-events="none"/>
+        <rect x="224.25" y="236.25" width="60" height="1" rx="0.15" ry="0.15" fill="none" stroke="rgb(0, 0, 0)" stroke-width="11" transform="rotate(90,254.25,236.75)" pointer-events="none"/>
+        <rect x="224.25" y="331.25" width="60" height="1" rx="0.15" ry="0.15" fill="none" stroke="rgb(0, 0, 0)" stroke-width="11" transform="rotate(90,254.25,331.75)" pointer-events="none"/>
+    </g>
+</svg>

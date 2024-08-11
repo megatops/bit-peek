@@ -10,7 +10,7 @@ import {BaseConv} from '../base_conv';
 import {bitsLabel, bitsRuler, groupBy} from "../utils";
 import {parseHexdump, parseNumber} from '../parser';
 
-suite('Base Convertor Test Suite', () => {
+suite('Base Converter Test Suite', () => {
     test('Size test', () => {
         assert.strictEqual((new BaseConv('0', 16)).size, 1);
         assert.strictEqual((new BaseConv('00', 16)).size, 1);

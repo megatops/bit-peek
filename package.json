@@ -32,7 +32,7 @@
   "categories": [
     "Other"
   ],
-  "icon": "images/icon.drawio.png",
+  "icon": "images/icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],

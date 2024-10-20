@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.3
+
+- Change to UI extension for better remote development support.
+
 ## Version 0.0.2
 
 - Fix bit ruler coloring issue in MSB0 bit numbering mode.

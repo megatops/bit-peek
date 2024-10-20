@@ -2,7 +2,7 @@
   "name": "bit-peek",
   "displayName": "Bit Peek",
   "description": "Display the binary and other forms of numbers in a very easy to read format.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "dingzhaojie",
   "engines": {
     "vscode": "^1.40.0"
@@ -31,6 +31,9 @@
   },
   "categories": [
     "Other"
+  ],
+  "extensionKind": [
+    "ui"
   ],
   "icon": "images/icon.png",
   "activationEvents": [

@@ -1,8 +1,8 @@
 {
   "name": "bit-peek",
   "displayName": "Bit Peek",
-  "description": "Display the binary and other forms of numbers in a very easy to read format.",
-  "version": "0.0.3",
+  "description": "%description%",
+  "version": "0.0.4",
   "publisher": "dingzhaojie",
   "engines": {
     "vscode": "^1.40.0"
@@ -48,24 +48,24 @@
         "bit-peek.registerView": {
           "type": "boolean",
           "default": true,
-          "description": "Display bits in register friendly view."
+          "description": "%cfg.registerView%"
         },
         "bit-peek.msb0": {
           "type": "boolean",
           "default": false,
-          "description": "Use MSB0 bit numbering (Motorola style)."
+          "description": "%cfg.msb0%"
         },
         "bit-peek.forceHex": {
           "type": "boolean",
           "default": false,
-          "description": "Enable force HEX mode by default."
+          "description": "%cfg.forceHex%"
         }
       }
     },
     "commands": [
       {
         "command": "bit-peek.forceHex",
-        "title": "Toggle force HEX mode",
+        "title": "%cmd.forceHex%",
         "category": "Bit Peek"
       }
     ],

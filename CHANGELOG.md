@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.4
+
+- Add `zh-cn` and `zh-tw` translations.
+
 ## Version 0.0.3
 
 - Change to UI extension for better remote development support.

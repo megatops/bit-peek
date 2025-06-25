@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.4
+
+- Add settings to configure what information is displayed: `showBin`, `showHex`, `showDec`, `showStr`, `showSize`
+
 ## Version 0.0.3
 
 - Change to UI extension for better remote development support.

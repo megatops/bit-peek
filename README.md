@@ -1,23 +1,39 @@
 # Bit Peek for Visual Studio Code
 
-Bit Peek can display the binary and other forms (hexadecimal, octal, ASCII) of numbers at mouse cursor in a very easy to read format. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek).
+Bit Peek can display various forms (binary, hexadecimal, decimal, octal, ASCII) of numbers on a simple mouse cursor hover action, in a very easy to read format. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek).
 
 ## Features
 
-By default, Bit Peek will show bits in an unique "register friendly" mode: all the `0`s will be displayed as `.`, so you can identify the `1`s at a glance.
+The hover content is highly configurable to suit your needs. You can customize what information is displayed in the hover tooltip by changing the following settings:
+
+- `bit-peek.showBin`: Show binary value. (Default: `true`)
+- `bit-peek.registerView`: Show bits in a "register-friendly" mode. More information below. (Default: `true`)
+- `bit-peek.showHex`: Show hexadecimal value. (Default: `true`)
+- `bit-peek.showStr`: Show ASCII string value. (Default: `true`)
+- `bit-peek.showDec`: Show decimal value. (Default: `true`)
+- `bit-peek.showSize`: Show size in bits/bytes. (Default: `true`)
+- `bit-peek.msb0`: Use MSB0 bit numbering (Motorola style). More information below. (Default: `false`)
+- `bit-peek.forceHex`: Enable 'Force HEX' mode. More information below. (Default: `false`)
+
+### 'Reigster Friendly' Mode
+
+In our unqiue "register-friendly" mode, `0` is shown as `.` so you can identify all the `1`s at a glance. This setting is inconsequential when `showBin` setting is set to `false`.
 
 ![](images/hover.png)
 
-Both the bit representation and numbering style are customizable:
+### 'MSB0 (Motorola)' Mode
 
-- `bit-peek.registerView` can switch the `0` style between register friendly and ordinary mode.
-- `bit-peek.msb0` can switch the bit numbering between LSB0 (default) and MSB0 (Motorola style).
+See following screenshot for the same number as above.
 
 ![](images/msb0.png)
+
+### 'Force HEX' Mode
 
 Bit Peek will try to identify the base of numbers automatically. But if you are analyzing memory dumps, try `Bit Peek: Toggle force HEX mode` command to enforce parsing as hexadecimals:
 
 ![](images/hexdump.png)
+
+### UNIX File Permissions
 
 For octal numbers, Bit Peek will interpret the bits as UNIX file permission when possible:
 

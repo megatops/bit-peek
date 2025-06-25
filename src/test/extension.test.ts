@@ -5,7 +5,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 
-import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo} from "../extension";
+import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo, __setTestConfig} from "../extension";
 import {BaseConv} from '../base_conv';
 import {bitsLabel, bitsRuler, groupBy} from "../utils";
 import {parseHexdump, parseNumber} from '../parser';
@@ -420,6 +420,8 @@ suite('Extension Test Suite', () => {
     });
 
     test('Hover content test', () => {
+        // Default hover configurations
+        __setTestConfig({showBin: true, showHex: true, showStr: true, showDec: true, showSize: true, registerView: true, msb0: false});
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value,
             'Bin: .... ....\n' +
             '     ---+ ---+\n' +
@@ -438,6 +440,56 @@ suite('Extension Test Suite', () => {
             'Hex: 01FF (16-bit)\n' +
             'Str:  . .\n' +
             'Dec: 511 (511 B)'
+        );
+    });
+
+    test('Configurable hover test', () => {
+        // Show nothing
+        __setTestConfig({showBin: false, showHex: false, showStr: false, showDec: false,});
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value, '');
+
+        // Show only binary (without register view)
+        __setTestConfig({ showBin: true, showHex: false, showStr: false, showDec: false, showSize: false, registerView: false, msb0: false });
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Bin: 1010 0101\n' +
+            '     ---+ ---+\n' +
+            '        4    0\n'
+        );
+
+        // Show only hex (without size)
+        __setTestConfig({ showBin: false, showHex: true, showStr: false, showDec: false, showSize: false });
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Hex: A5'
+        );
+
+        // Show only ASCII
+        __setTestConfig({ showBin: false, showHex: false, showStr: true, showDec: false });
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('4142', 16)).contents[0]).value,
+            'Str:  A B'
+        );
+
+        // Show only decimal (without size)
+        __setTestConfig({ showBin: false, showHex: false, showStr: false, showDec: true, showSize: false });
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Dec: 165 / -91'
+        );
+
+        // Show binary and hex (with sizes)
+        __setTestConfig({ showBin: false, showHex: true, showStr: false, showDec: true, showSize: true });
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Hex: A5 (8-bit)\n' +
+            'Dec: 165 (165 B) / -91'
+        );
+
+        // Show binary, hex and decimal (without sizes)
+        __setTestConfig({ showBin: true, showHex: true, showStr: false, showDec: true, showSize: false });
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Bin: 1010 0101\n' +
+            '     ---+ ---+\n' +
+            '        4    0\n' +
+            '\n' +
+            'Hex: A5\n' +
+            'Dec: 165 / -91'
         );
     });
 });

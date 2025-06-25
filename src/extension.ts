@@ -19,10 +19,9 @@ let gRegView = bitPeekCfg('registerView');
 
 // For testing purpose
 export function __setTestConfig(config: {
-    forceHex?: boolean, showSize?: boolean, showBin?: boolean, showHex?: boolean,
+    showSize?: boolean, showBin?: boolean, showHex?: boolean,
     showStr?: boolean, showDec?: boolean, msb0?: boolean, registerView?: boolean,
 }) {
-    if (config.forceHex !== undefined) { forceHex = config.forceHex; }
     if (config.showSize !== undefined) { showSize = config.showSize; }
     if (config.showBin !== undefined) { showBin = config.showBin; }
     if (config.showHex !== undefined) { showHex = config.showHex; }

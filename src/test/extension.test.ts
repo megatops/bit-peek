@@ -446,7 +446,9 @@ suite('Extension Test Suite', () => {
     test('Configurable hover test', () => {
         // Show nothing
         __setTestConfig({showBin: false, showHex: false, showStr: false, showDec: false,});
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value, '');
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value,
+        'WARNING: All formats disabled in settings.'
+        );
 
         // Show only binary (LSB0, without register view)
         __setTestConfig({ showBin: true, showHex: false, showStr: false, showDec: false, showSize: false, registerView: false, msb0: false });

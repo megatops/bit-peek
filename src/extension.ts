@@ -116,10 +116,14 @@ export function bitPeek(v: BaseConv): vscode.Hover {
     if (showDec) {
         peek.push(decInfo(v));
     }
+    if (peek.length === 0) {
+        peek.push('WARNING: All formats disabled in settings.');
+    }
 
     if (forceHex) {
         peek.push('\n[Force HEX Mode]');
     }
+
     return new vscode.Hover({
         language: 'bit-peek',
         value: peek.join('\n'),

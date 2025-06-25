@@ -8,17 +8,25 @@ import {BaseConv} from './base_conv';
 import {bitsLabel, bitsRuler, groupBy} from "./utils";
 import {parseHexdump, parseNumber} from "./parser";
 
-let forceHex = bitPeekCfg('forceHex');
-let showSize = bitPeekCfg('showSize');
-let showBin = bitPeekCfg('showBin');
-let showHex = bitPeekCfg('showHex');
-let showStr = bitPeekCfg('showStr');
-let showDec = bitPeekCfg('showDec');
-let gLsb0 = !bitPeekCfg('msb0');
-let gRegView = bitPeekCfg('registerView');
+let forceHex: boolean = false;
+let showSize: boolean = true;
+let showBin: boolean = true;
+let showHex: boolean = true;
+let showStr: boolean = true;
+let showDec: boolean = true;
+let gLsb0: boolean = true;
+let gRegView: boolean = true;
 
-function bitPeekCfg(cfg: string): boolean {
-    return !!vscode.workspace.getConfiguration('bit-peek').get(cfg);
+function updateConfigs(): void {
+    let config = vscode.workspace.getConfiguration('bit-peek');
+    forceHex = !!config.get('forceHex');
+    showSize = !!config.get('showSize');
+    showBin = !!config.get('showBin');
+    showHex = !!config.get('showHex');
+    showStr = !!config.get('showStr');
+    showDec = !!config.get('showDec');
+    gLsb0 = !config.get('msb0');
+    gRegView = !!config.get('registerView');
 }
 
 function parseText(str: string): BaseConv | null {
@@ -120,29 +128,8 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('Bit Peek is now active.');
 
     vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
-        if (event.affectsConfiguration('bit-peek.forceHex')) {
-            forceHex = bitPeekCfg('forceHex');
-        }
-        if (event.affectsConfiguration('bit-peek.showSize')) {
-            showSize = bitPeekCfg('showSize');
-        }
-        if (event.affectsConfiguration('bit-peek.showBin')) {
-            showBin = bitPeekCfg('showBin');
-        }
-        if (event.affectsConfiguration('bit-peek.showHex')) {
-            showHex = bitPeekCfg('showHex');
-        }
-        if (event.affectsConfiguration('bit-peek.showStr')) {
-            showStr = bitPeekCfg('showStr');
-        }
-        if (event.affectsConfiguration('bit-peek.showDec')) {
-            showDec = bitPeekCfg('showDec');
-        }
-        if (event.affectsConfiguration('bit-peek.msb0')) {
-            gLsb0 = !bitPeekCfg('msb0');
-        }
-        if (event.affectsConfiguration('bit-peek.registerView')) {
-            gRegView = bitPeekCfg('registerView');
+        if (event.affectsConfiguration('bit-peek')) {
+            updateConfigs();
         }
     });
 

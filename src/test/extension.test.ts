@@ -448,7 +448,7 @@ suite('Extension Test Suite', () => {
         __setTestConfig({showBin: false, showHex: false, showStr: false, showDec: false,});
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value, '');
 
-        // Show only binary (without register view)
+        // Show only binary (LSB0, without register view)
         __setTestConfig({ showBin: true, showHex: false, showStr: false, showDec: false, showSize: false, registerView: false, msb0: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
             'Bin: 1010 0101\n' +
@@ -481,8 +481,8 @@ suite('Extension Test Suite', () => {
             'Dec: 165 (165 B) / -91'
         );
 
-        // Show binary, hex and decimal (without sizes)
-        __setTestConfig({ showBin: true, showHex: true, showStr: false, showDec: true, showSize: false });
+        // Show binary (LSB0, without register view), hex and decimal (without sizes)
+        __setTestConfig({ showBin: true, showHex: true, showStr: false, showDec: true, showSize: false, registerView: false, msb0: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
             'Bin: 1010 0101\n' +
             '     ---+ ---+\n' +

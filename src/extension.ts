@@ -17,20 +17,6 @@ let showDec = bitPeekCfg('showDec');
 let gLsb0 = !bitPeekCfg('msb0');
 let gRegView = bitPeekCfg('registerView');
 
-// For testing purpose
-export function __setTestConfig(config: {
-    showSize?: boolean, showBin?: boolean, showHex?: boolean,
-    showStr?: boolean, showDec?: boolean, msb0?: boolean, registerView?: boolean,
-}) {
-    if (config.showSize !== undefined) { showSize = config.showSize; }
-    if (config.showBin !== undefined) { showBin = config.showBin; }
-    if (config.showHex !== undefined) { showHex = config.showHex; }
-    if (config.showStr !== undefined) { showStr = config.showStr; }
-    if (config.showDec !== undefined) { showDec = config.showDec; }
-    if (config.msb0 !== undefined) { gLsb0 = !config.msb0; }
-    if (config.registerView !== undefined) { gRegView = config.registerView; }
-}
-
 function bitPeekCfg(cfg: string): boolean {
     return !!vscode.workspace.getConfiguration('bit-peek').get(cfg);
 }

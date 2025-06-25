@@ -5,7 +5,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 
-import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo, __setTestConfig} from "../extension";
+import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo} from "../extension";
 import {BaseConv} from '../base_conv';
 import {bitsLabel, bitsRuler, groupBy} from "../utils";
 import {parseHexdump, parseNumber} from '../parser';
@@ -247,6 +247,17 @@ suite('Utils Test Suite', () => {
 });
 
 suite('Extension Test Suite', () => {
+    // Helper function to update settings and wait for the change to propagate
+    async function updateConfig(settings: any) {
+        const config = vscode.workspace.getConfiguration('bit-peek');
+        for (const key in settings) {
+            await config.update(key, settings[key], vscode.ConfigurationTarget.Global);
+        }
+        // It can take a moment for the configuration change to be picked up by the extension.
+        // A small delay helps ensure the test runs against the new settings.
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     test('Number parse test', () => {
         // hex
         assert.strictEqual(parseNumber('0x01af')?.toHex(), '01AF');
@@ -419,9 +430,7 @@ suite('Extension Test Suite', () => {
         assert.strictEqual(decInfo(new BaseConv('1024', 10)), 'Dec: 1,024 (1.000 KiB)');
     });
 
-    test('Hover content test', () => {
-        // Default hover configurations
-        __setTestConfig({showBin: true, showHex: true, showStr: true, showDec: true, showSize: true, registerView: true, msb0: false});
+    test('Hover content test', async () => {
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value,
             'Bin: .... ....\n' +
             '     ---+ ---+\n' +
@@ -443,15 +452,15 @@ suite('Extension Test Suite', () => {
         );
     });
 
-    test('Configurable hover test', () => {
+    test('Configurable hover test', async () => {
         // Show nothing
-        __setTestConfig({showBin: false, showHex: false, showStr: false, showDec: false,});
+        await updateConfig({ showBin: false, showHex: false, showStr: false, showDec: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value,
         'WARNING: All formats disabled in settings.'
         );
 
         // Show only binary (LSB0, without register view)
-        __setTestConfig({ showBin: true, showHex: false, showStr: false, showDec: false, showSize: false, registerView: false, msb0: false });
+        await updateConfig({ showBin: true, showHex: false, showStr: false, showDec: false, showSize: false, registerView: false, msb0: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
             'Bin: 1010 0101\n' +
             '     ---+ ---+\n' +
@@ -459,32 +468,32 @@ suite('Extension Test Suite', () => {
         );
 
         // Show only hex (without size)
-        __setTestConfig({ showBin: false, showHex: true, showStr: false, showDec: false, showSize: false });
+        await updateConfig({ showBin: false, showHex: true, showStr: false, showDec: false, showSize: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
             'Hex: A5'
         );
 
         // Show only ASCII
-        __setTestConfig({ showBin: false, showHex: false, showStr: true, showDec: false });
+        await updateConfig({ showBin: false, showHex: false, showStr: true, showDec: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('4142', 16)).contents[0]).value,
             'Str:  A B'
         );
 
         // Show only decimal (without size)
-        __setTestConfig({ showBin: false, showHex: false, showStr: false, showDec: true, showSize: false });
+        await updateConfig({ showBin: false, showHex: false, showStr: false, showDec: true, showSize: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
             'Dec: 165 / -91'
         );
 
         // Show binary and hex (with sizes)
-        __setTestConfig({ showBin: false, showHex: true, showStr: false, showDec: true, showSize: true });
+        await updateConfig({ showBin: false, showHex: true, showStr: false, showDec: true, showSize: true });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
             'Hex: A5 (8-bit)\n' +
             'Dec: 165 (165 B) / -91'
         );
 
         // Show binary (LSB0, without register view), hex and decimal (without sizes)
-        __setTestConfig({ showBin: true, showHex: true, showStr: false, showDec: true, showSize: false, registerView: false, msb0: false });
+        await updateConfig({ showBin: true, showHex: true, showStr: false, showDec: true, showSize: false, registerView: false, msb0: false });
         assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
             'Bin: 1010 0101\n' +
             '     ---+ ---+\n' +

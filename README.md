@@ -15,9 +15,9 @@ The hover content is highly configurable to suit your needs. You can customize w
 - `bit-peek.msb0`: Use MSB0 bit numbering (Motorola style). More information below. (Default: `false`)
 - `bit-peek.forceHex`: Enable 'Force HEX' mode. More information below. (Default: `false`)
 
-### 'Reigster Friendly' Mode
+### 'Register Friendly' Mode
 
-In our unqiue "register-friendly" mode, `0` is shown as `.` so you can identify all the `1`s at a glance. This setting is inconsequential when `showBin` setting is set to `false`.
+In our unique "register-friendly" mode, `0` is shown as `.` so you can identify all the `1`s at a glance. This setting is inconsequential when `showBin` setting is set to `false`.
 
 ![](images/hover.png)
 

@@ -419,6 +419,23 @@ suite('Extension Test Suite', () => {
         assert.strictEqual(decInfo(new BaseConv('-1', 10)), 'Dec: 255 (255 B) / -1');
         assert.strictEqual(decInfo(new BaseConv('1024', 10)), 'Dec: 1,024 (1.000 KiB)');
     });
+
+    test('Toggle Force Hex command updates setting', async () => {
+        // Start with forceHex setting disabled, then toggle it on and off again
+        let config = vscode.workspace.getConfiguration('bit-peek');
+        await config.update("forceHex", false, vscode.ConfigurationTarget.Global);
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        await vscode.commands.executeCommand('bit-peek.forceHexToggle');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        config = vscode.workspace.getConfiguration('bit-peek');
+        assert.strictEqual(config.get('forceHex'), true);
+
+        await vscode.commands.executeCommand('bit-peek.forceHexToggle');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        config = vscode.workspace.getConfiguration('bit-peek');
+        assert.strictEqual(config.get('forceHex'), false);
+    });
 });
 
 suite('Hover Content Test Suite', () => {
@@ -430,7 +447,7 @@ suite('Hover Content Test Suite', () => {
         }
         // It can take a moment for the configuration change to be picked up by the extension.
         // A small delay helps ensure the test runs against the new settings.
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
 
     // Reset configuration after each test
@@ -526,6 +543,32 @@ suite('Hover Content Test Suite', () => {
             '\n' +
             'Hex: A5\n' +
             'Dec: 165 / -91'
+        );
+    });
+
+    test('Force Hex (setting)', async () => {
+        await updateConfig({ forceHex: true, showBin: false, showStr: false, showDec: false, showSize: false });
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Hex: A5\n' +
+            '\n[Force HEX Mode]'
+        );
+    });
+
+    test('Force Hex (command)', async () => {
+        // Start with forceHex disabled, then toggle it on and finally off again
+        await updateConfig({ forceHex: false, showBin: false, showStr: false, showDec: false, showSize: false });
+
+        await vscode.commands.executeCommand('bit-peek.forceHexToggle');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Hex: A5\n' +
+            '\n[Force HEX Mode]'
+        );
+
+        await vscode.commands.executeCommand('bit-peek.forceHexToggle');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+            'Hex: A5'
         );
     });
 });

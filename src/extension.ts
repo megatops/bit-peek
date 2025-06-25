@@ -144,8 +144,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    const cmd = vscode.commands.registerCommand('bit-peek.forceHex', () => {
-        forceHex = !forceHex;
+    const cmd = vscode.commands.registerCommand('bit-peek.forceHexToggle', () => {
+        const config = vscode.workspace.getConfiguration('bit-peek');
+        config.update('forceHex', !forceHex, vscode.ConfigurationTarget.Global);
         vscode.window.showInformationMessage(`Bit Peek: force HEX mode is ${forceHex ? 'enabled' : 'disabled'}.`);
     });
 

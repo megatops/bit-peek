@@ -89,7 +89,7 @@
     },
     "commands": [
       {
-        "command": "bit-peek.forceHex",
+        "command": "bit-peek.forceHexToggle",
         "title": "Toggle force HEX mode",
         "category": "Bit Peek"
       }

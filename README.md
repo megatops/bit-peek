@@ -23,7 +23,7 @@ In our unique "register-friendly" mode, `0` is shown as `.` so you can identify 
 
 ### 'MSB0 (Motorola)' Mode
 
-See following screenshot for the same number as above.
+The following screenshot shows MSB0 bit numbering for the same input value as above. This setting is inconsequential when `showBin` setting is set to `false`.
 
 ![](images/msb0.png)
 

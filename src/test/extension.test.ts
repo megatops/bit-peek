@@ -430,7 +430,7 @@ suite('Hover Content Test Suite', () => {
         }
         // It can take a moment for the configuration change to be picked up by the extension.
         // A small delay helps ensure the test runs against the new settings.
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 10));
     }
 
     // Reset configuration after each test

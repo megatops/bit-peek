@@ -8,10 +8,25 @@ import {BaseConv} from './base_conv';
 import {bitsLabel, bitsRuler, groupBy} from "./utils";
 import {parseHexdump, parseNumber} from "./parser";
 
-let forceHex = bitPeekCfg('forceHex');
+let forceHex: boolean = false;
+let showSize: boolean = true;
+let showBin: boolean = true;
+let showHex: boolean = true;
+let showStr: boolean = true;
+let showDec: boolean = true;
+let gLsb0: boolean = true;
+let gRegView: boolean = true;
 
-function bitPeekCfg(cfg: string): boolean {
-    return !!vscode.workspace.getConfiguration('bit-peek').get(cfg);
+function updateConfigs(): void {
+    let config = vscode.workspace.getConfiguration('bit-peek');
+    forceHex = !!config.get('forceHex');
+    showSize = !!config.get('showSize');
+    showBin = !!config.get('showBin');
+    showHex = !!config.get('showHex');
+    showStr = !!config.get('showStr');
+    showDec = !!config.get('showDec');
+    gLsb0 = !config.get('msb0');
+    gRegView = !!config.get('registerView');
 }
 
 function parseText(str: string): BaseConv | null {
@@ -59,7 +74,11 @@ export function permInfo(v: BaseConv): string | null {
 }
 
 export function hexInfo(v: BaseConv): string {
-    return `Hex: ${groupBy(v.toHex(), 4)} (${v.width}-bit)`;
+    let hex = `Hex: ${groupBy(v.toHex(), 4)}`;
+    if (showSize) {
+        hex += ` (${v.width}-bit)`;
+    }
+    return hex;
 }
 
 export function strInfo(v: BaseConv): string {
@@ -67,24 +86,38 @@ export function strInfo(v: BaseConv): string {
 }
 
 export function decInfo(v: BaseConv): string {
-    return `Dec: ${v.toUint()} (${v.toGMK()})` + ((v.int < 0n) ? ` / ${v.toInt()}` : '');
+    let dec = `Dec: ${v.toUint()}`;
+    if (showSize) {
+        dec += ` (${v.toGMK()})`;
+    }
+    return dec + ((v.int < 0n) ? ` / ${v.toInt()}` : '');
 }
 
 export function bitPeek(v: BaseConv): vscode.Hover {
-    const lsb0 = !bitPeekCfg('msb0');
-    const regView = bitPeekCfg('registerView');
     let peek: string[] = Array();
 
     const perm = (v.base === 8) ? permInfo(v) : null;
-    peek.push((perm !== null) ? perm : binInfo(v, lsb0, regView));
-    peek.push('');
-    peek.push(hexInfo(v));
-    peek.push(strInfo(v));
-    peek.push(decInfo(v));
+    if (showBin) {
+        peek.push((perm !== null) ? perm : binInfo(v, gLsb0, gRegView));
+        peek.push('');
+    }
+    if (showHex) {
+        peek.push(hexInfo(v));
+    }
+    if (showStr) {
+        peek.push(strInfo(v));
+    }
+    if (showDec) {
+        peek.push(decInfo(v));
+    }
+    if (peek.length === 0) {
+        peek.push('Bit Peek: All formats disabled in settings.');
+    }
 
     if (forceHex) {
         peek.push('\n[Force HEX Mode]');
     }
+
     return new vscode.Hover({
         language: 'bit-peek',
         value: peek.join('\n'),
@@ -94,8 +127,14 @@ export function bitPeek(v: BaseConv): vscode.Hover {
 export function activate(context: vscode.ExtensionContext) {
     console.log('Bit Peek is now active.');
 
+    vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
+        if (event.affectsConfiguration('bit-peek')) {
+            updateConfigs();
+        }
+    });
+
     const hover = vscode.languages.registerHoverProvider({scheme: '*', language: '*'}, {
-        provideHover(doc, pos, _) {
+        provideHover(doc: vscode.TextDocument, pos: vscode.Position, _: vscode.CancellationToken) {
             try {
                 const v: BaseConv | null = parseText(doc.getText(doc.getWordRangeAtPosition(pos)));
                 return v ? bitPeek(v) : null;
@@ -105,8 +144,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    const cmd = vscode.commands.registerCommand('bit-peek.forceHex', () => {
-        forceHex = !forceHex;
+    const cmd = vscode.commands.registerCommand('bit-peek.forceHexToggle', () => {
+        const config = vscode.workspace.getConfiguration('bit-peek');
+        config.update('forceHex', !forceHex, vscode.ConfigurationTarget.Global);
         vscode.window.showInformationMessage(`Bit Peek: force HEX mode is ${forceHex ? 'enabled' : 'disabled'}.`);
     });
 

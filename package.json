@@ -2,7 +2,7 @@
   "name": "bit-peek",
   "displayName": "Bit Peek",
   "description": "Display the binary and other forms of numbers in a very easy to read format.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "dingzhaojie",
   "engines": {
     "vscode": "^1.40.0"
@@ -59,12 +59,37 @@
           "type": "boolean",
           "default": false,
           "description": "Enable force HEX mode by default."
+        },
+        "bit-peek.showBin": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show binary value in hover."
+        },
+        "bit-peek.showHex": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show hex value in hover."
+        },
+        "bit-peek.showStr": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show string value in hover."
+        },
+        "bit-peek.showDec": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show decimal value in hover."
+        },
+        "bit-peek.showSize": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show size in bits/bytes."
         }
       }
     },
     "commands": [
       {
-        "command": "bit-peek.forceHex",
+        "command": "bit-peek.forceHexToggle",
         "title": "Toggle force HEX mode",
         "category": "Bit Peek"
       }

@@ -111,7 +111,7 @@ export function bitPeek(v: BaseConv): vscode.Hover {
         peek.push(decInfo(v));
     }
     if (peek.length === 0) {
-        peek.push('WARNING: All formats disabled in settings.');
+        peek.push('Bit Peek: All formats disabled in settings.');
     }
 
     if (forceHex) {

@@ -2,7 +2,7 @@
 
 ## Version 0.0.4
 
-- Add settings to configure what information is displayed: `showBin`, `showHex`, `showDec`, `showStr`, `showSize`
+- Add settings to configure what information is displayed: `showBin`, `showHex`, `showDec`, `showStr`, `showSize` (by Oswin Rodrigues)
 
 ## Version 0.0.3
 

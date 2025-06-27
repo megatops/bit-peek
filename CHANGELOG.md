@@ -1,8 +1,12 @@
 # Change Log
 
-## Version 0.0.4
+## Version 0.0.5
 
 - Add settings to configure what information is displayed: `showBin`, `showHex`, `showDec`, `showStr`, `showSize` (by Oswin Rodrigues)
+
+## Version 0.0.4
+
+Add `zh-cn` and `zh-tw` translations.
 
 ## Version 0.0.3
 

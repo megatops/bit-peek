@@ -2,6 +2,6 @@
     "cfg.forceHex": "Enable force HEX mode (parse all the numbers in HEX) by default.",
     "cfg.msb0": "Use MSB0 bit numbering (Motorola style).",
     "cfg.registerView": "Display bits in register friendly view.",
-    "cmd.forceHex": "Toggle force HEX mode (parse all the numbers in HEX)",
+    "cmd.forceHexToggle": "Toggle force HEX mode (parse all the numbers in HEX)",
     "description": "Display the binary and other forms of numbers in a very easy to read format."
 }

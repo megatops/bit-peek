@@ -2,6 +2,6 @@
     "cfg.forceHex": "默認啟用強制16進位模式（以16進位解析所有數位）",
     "cfg.msb0": "使用MSB0位编号(Motorola风格)",
     "cfg.registerView": "針對寄存器解析優化二進位顯示",
-    "cmd.forceHex": "切換強制16進位模式（以16進位解析所有數位）",
+    "cmd.forceHexToggle": "切換強制16進位模式（以16進位解析所有數位）",
     "description": "以非常可讀易辨識的方式顯示數位的二進位和其它形式"
 }

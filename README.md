@@ -4,36 +4,17 @@ Bit Peek can display various forms (binary, hexadecimal, decimal, octal, ASCII) 
 
 ## Features
 
-The hover content is highly configurable to suit your needs. You can customize what information is displayed in the hover tooltip by changing the following settings:
-
-- `bit-peek.showBin`: Show binary value. (Default: `true`)
-- `bit-peek.registerView`: Show bits in a "register-friendly" mode. More information below. (Default: `true`)
-- `bit-peek.showHex`: Show hexadecimal value. (Default: `true`)
-- `bit-peek.showStr`: Show ASCII string value. (Default: `true`)
-- `bit-peek.showDec`: Show decimal value. (Default: `true`)
-- `bit-peek.showSize`: Show size in bits/bytes. (Default: `true`)
-- `bit-peek.msb0`: Use MSB0 bit numbering (Motorola style). More information below. (Default: `false`)
-- `bit-peek.forceHex`: Enable 'Force HEX' mode. More information below. (Default: `false`)
-
-### 'Register Friendly' Mode
-
-In our unique "register-friendly" mode, `0` is shown as `.` so you can identify all the `1`s at a glance. This setting is inconsequential when `showBin` setting is set to `false`.
+Bit Peek could show bits in an unique "register friendly" mode: all the `0`s will be displayed as `.`, so you can identify the `1`s at a glance:
 
 ![](images/hover.png)
 
-### 'MSB0 (Motorola)' Mode
-
-The following screenshot shows MSB0 bit numbering for the same input value as above. This setting is inconsequential when `showBin` setting is set to `false`.
+And it supports both LSB0 (Intel-style) and MSB0 (Motorola-style) bit numbering display:
 
 ![](images/msb0.png)
-
-### 'Force HEX' Mode
 
 Bit Peek will try to identify the base of numbers automatically. But if you are analyzing memory dumps, try `Bit Peek: Toggle force HEX mode` command to enforce parsing as hexadecimals:
 
 ![](images/hexdump.png)
-
-### UNIX File Permissions
 
 For octal numbers, Bit Peek will interpret the bits as UNIX file permission when possible:
 
@@ -48,6 +29,20 @@ For octal numbers, Bit Peek will interpret the bits as UNIX file permission when
 | CSS        | #RGB: `#AABBCC`                                              |
 | NASM       | Hex: `0x1234`, `0h1234`, `1234h`<br />Oct: `0o777`, `777o`<br />Bin: `0b1010`, `1010b`, `0b1100_1000`<br />Dec: `0d1234`, `1234d`, `1234` |
 | Verilog    | Hex: `h1234`, `sh1234`<br />Oct: `o777`, `so777`<br />Bin: `b1010`, `sb1010`, `b0100_0000_0000`<br />Dec: `1234`, `d1234`, `sd1234`, `25_000_000` |
+
+## Customizations
+
+The hover content is highly configurable to suit your needs. You can customize what information is displayed in the hover tooltip by changing the following settings:
+
+- `bit-peek.showBin`: Show binary value.
+  - `bit-peek.registerView`: Show bits in a "register-friendly" mode.
+  - `bit-peek.msb0`: Use MSB0 bit numbering (Motorola-style).
+- `bit-peek.showHex`: Show hexadecimal value.
+  - `bit-peek.showWidth`: Show data bit width.
+- `bit-peek.showStr`: Show ASCII characters.
+- `bit-peek.showDec`: Show decimal value.
+  - `bit-peek.showSize`: Show as capacity (T/G/M/K).
+- `bit-peek.forceHex`: Enable "Force HEX" mode.
 
 ## Limitations
 

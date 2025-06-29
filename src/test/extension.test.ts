@@ -1,13 +1,14 @@
 // Bit Peek for Visual Studio Code
 //
-// Copyright (C) 2024 Ding Zhaojie <zhaojie_ding@msn.com>
+// Copyright (C) 2024-2025 Ding Zhaojie <zhaojie_ding@msn.com>
 
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { suite, test, afterEach } from 'mocha';
+// import {suite, test, afterEach} from 'mocha';
 
 import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo} from "../extension";
 import {BaseConv} from '../base_conv';
+import {BitPeekCfg} from '../config';
 import {bitsLabel, bitsRuler, groupBy} from "../utils";
 import {parseHexdump, parseNumber} from '../parser';
 
@@ -412,60 +413,61 @@ suite('Extension Test Suite', () => {
     });
 
     test('Other info display test', () => {
-        assert.strictEqual(hexInfo(new BaseConv('-1', 10)), 'Hex: FF (8-bit)');
-        assert.strictEqual(hexInfo(new BaseConv('61626364', 16)), 'Hex: 6162 6364 (32-bit)');
+        assert.strictEqual(hexInfo(new BaseConv('-1', 10), true), 'Hex: FF (8-bit)');
+        assert.strictEqual(hexInfo(new BaseConv('61626364', 16), true), 'Hex: 6162 6364 (32-bit)');
         assert.strictEqual(strInfo(new BaseConv('61626364', 16)), 'Str:  a b  c d');
-        assert.strictEqual(decInfo(new BaseConv('FF', 16)), 'Dec: 255 (255 B) / -1');
-        assert.strictEqual(decInfo(new BaseConv('-1', 10)), 'Dec: 255 (255 B) / -1');
-        assert.strictEqual(decInfo(new BaseConv('1024', 10)), 'Dec: 1,024 (1.000 KiB)');
+        assert.strictEqual(decInfo(new BaseConv('FF', 16), true), 'Dec: 255 (255 B) / -1');
+        assert.strictEqual(decInfo(new BaseConv('-1', 10), true), 'Dec: 255 (255 B) / -1');
+        assert.strictEqual(decInfo(new BaseConv('1024', 10), true), 'Dec: 1,024 (1.000 KiB)');
     });
 
     test('Toggle Force Hex command updates setting', async () => {
         // Start with forceHex setting disabled, then toggle it on and off again
         let config = vscode.workspace.getConfiguration('bit-peek');
         await config.update("forceHex", false, vscode.ConfigurationTarget.Global);
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 150));
 
         await vscode.commands.executeCommand('bit-peek.forceHexToggle');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 150));
         config = vscode.workspace.getConfiguration('bit-peek');
         assert.strictEqual(config.get('forceHex'), true);
 
         await vscode.commands.executeCommand('bit-peek.forceHexToggle');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 150));
         config = vscode.workspace.getConfiguration('bit-peek');
         assert.strictEqual(config.get('forceHex'), false);
     });
 });
 
 suite('Hover Content Test Suite', () => {
-    // Helper function to update settings and wait for the change to propagate
-    async function updateConfig(settings: any) {
-        const config = vscode.workspace.getConfiguration('bit-peek');
-        for (const key in settings) {
-            await config.update(key, settings[key], vscode.ConfigurationTarget.Global);
-        }
-        // It can take a moment for the configuration change to be picked up by the extension.
-        // A small delay helps ensure the test runs against the new settings.
-        await new Promise(resolve => setTimeout(resolve, 100));
+    // use a pseudo config to run UT faster and more stable
+    let cfg = new BitPeekCfg(false);
+
+    function resetConfig() {
+        cfg.forceHex = false;
+        cfg.msb0 = false;
+        cfg.registerView = true;
+        cfg.showBin = true;
+        cfg.showDec = true;
+        cfg.showHex = true;
+        cfg.showSize = true;
+        cfg.showStr = true;
+        cfg.showWidth = true;
     }
 
-    // Reset configuration after each test
-    afterEach(async () => {
-        await updateConfig({
-            showBin: true,
-            showHex: true,
-            showStr: true,
-            showDec: true,
-            showSize: true,
-            registerView: true,
-            msb0: false,
-            forceHex: false
-        });
-    });
+    function updateConfig(settings: any) {
+        resetConfig();
+        for (const key in settings) {
+            (cfg as any)[key] = settings[key];
+        }
+    }
 
-    test('Default hover settings', async () => {
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value,
+    function hoverStr(str: string, base = 10): String {
+        return (<vscode.MarkdownString>bitPeek(new BaseConv(str, base), cfg).contents[0]).value;
+    }
+
+    test('Default hover settings', () => {
+        assert.strictEqual(hoverStr('0'),
             'Bin: .... ....\n' +
             '     ---+ ---+\n' +
             '        4    0\n' +
@@ -476,8 +478,8 @@ suite('Hover Content Test Suite', () => {
         );
     });
 
-    test('UNIX file permissions', async () => {
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('777', 8)).contents[0]).value,
+    test('UNIX file permissions', () => {
+        assert.strictEqual(hoverStr('777', 8),
             'File Permission:\n' +
             '  r w x  r w x  r w x\n' +
             '  -----  -----  -----\n' +
@@ -489,54 +491,54 @@ suite('Hover Content Test Suite', () => {
         );
     });
 
-    test('All formats disabled', async () => {
-        await updateConfig({ showBin: false, showHex: false, showStr: false, showDec: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('0')).contents[0]).value,
-        'WARNING: All formats disabled in settings.'
+    test('All formats disabled', () => {
+        updateConfig({showBin: false, showHex: false, showStr: false, showDec: false});
+        assert.strictEqual(hoverStr('0'),
+            'Bit Peek: All formats disabled in settings.'
         );
     });
 
-    test('Only binary, ordinary mode', async () => {
-        await updateConfig({ showHex: false, showStr: false, showDec: false, showSize: false, registerView: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+    test('Only binary, ordinary mode', () => {
+        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, registerView: false});
+        assert.strictEqual(hoverStr('A5', 16),
             'Bin: 1010 0101\n' +
             '     ---+ ---+\n' +
             '        4    0\n'
         );
     });
 
-    test('Only hex, no size', async () => {
-        await updateConfig({ showBin: false, showStr: false, showDec: false, showSize: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+    test('Only hex, no width', () => {
+        updateConfig({showBin: false, showStr: false, showDec: false, showWidth: false});
+        assert.strictEqual(hoverStr('A5', 16),
             'Hex: A5'
         );
     });
 
-    test('Only ASCII', async () => {
-        await updateConfig({ showBin: false, showHex: false, showDec: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('4142', 16)).contents[0]).value,
+    test('Only ASCII', () => {
+        updateConfig({showBin: false, showHex: false, showDec: false});
+        assert.strictEqual(hoverStr('4142', 16),
             'Str:  A B'
         );
     });
 
-    test('Only decimal, no size', async () => {
-        await updateConfig({ showBin: false, showHex: false, showStr: false, showSize: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+    test('Only decimal, no size', () => {
+        updateConfig({showBin: false, showHex: false, showStr: false, showSize: false});
+        assert.strictEqual(hoverStr('A5', 16),
             'Dec: 165 / -91'
         );
     });
 
-    test('Hex and decimal, with sizes', async () => {
-        await updateConfig({ showBin: false, showStr: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+    test('Hex and decimal, with sizes', () => {
+        updateConfig({showBin: false, showStr: false});
+        assert.strictEqual(hoverStr('A5', 16),
             'Hex: A5 (8-bit)\n' +
             'Dec: 165 (165 B) / -91'
         );
     });
 
-    test('Binary (ordinary), hex and decimal (with sizes)', async () => {
-        await updateConfig({ showStr: false, showSize: false, registerView: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+    test('Binary (ordinary), hex and decimal (without sizes)', () => {
+        updateConfig({showStr: false, showWidth: false, showSize: false, registerView: false});
+        assert.strictEqual(hoverStr('A5', 16),
             'Bin: 1010 0101\n' +
             '     ---+ ---+\n' +
             '        4    0\n' +
@@ -546,29 +548,11 @@ suite('Hover Content Test Suite', () => {
         );
     });
 
-    test('Force Hex (setting)', async () => {
-        await updateConfig({ forceHex: true, showBin: false, showStr: false, showDec: false, showSize: false });
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
+    test('Force Hex', () => {
+        updateConfig({forceHex: true, showBin: false, showStr: false, showDec: false, showWidth: false});
+        assert.strictEqual(hoverStr('A5', 16),
             'Hex: A5\n' +
             '\n[Force HEX Mode]'
-        );
-    });
-
-    test('Force Hex (command)', async () => {
-        // Start with forceHex disabled, then toggle it on and finally off again
-        await updateConfig({ forceHex: false, showBin: false, showStr: false, showDec: false, showSize: false });
-
-        await vscode.commands.executeCommand('bit-peek.forceHexToggle');
-        await new Promise(resolve => setTimeout(resolve, 100));
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
-            'Hex: A5\n' +
-            '\n[Force HEX Mode]'
-        );
-
-        await vscode.commands.executeCommand('bit-peek.forceHexToggle');
-        await new Promise(resolve => setTimeout(resolve, 100));
-        assert.strictEqual((<vscode.MarkdownString>bitPeek(new BaseConv('A5', 16)).contents[0]).value,
-            'Hex: A5'
         );
     });
 });

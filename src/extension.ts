@@ -1,35 +1,17 @@
 // Bit Peek for Visual Studio Code
 //
-// Copyright (C) 2024 Ding Zhaojie <zhaojie_ding@msn.com>
+// Copyright (C) 2024-2025 Ding Zhaojie <zhaojie_ding@msn.com>
 
 import * as vscode from 'vscode';
 
 import {BaseConv} from './base_conv';
+import {BitPeekCfg} from './config';
 import {bitsLabel, bitsRuler, groupBy} from "./utils";
 import {parseHexdump, parseNumber} from "./parser";
 
-let forceHex: boolean = false;
-let showSize: boolean = true;
-let showBin: boolean = true;
-let showHex: boolean = true;
-let showStr: boolean = true;
-let showDec: boolean = true;
-let gLsb0: boolean = true;
-let gRegView: boolean = true;
+let cfg = new BitPeekCfg();
 
-function updateConfigs(): void {
-    let config = vscode.workspace.getConfiguration('bit-peek');
-    forceHex = !!config.get('forceHex');
-    showSize = !!config.get('showSize');
-    showBin = !!config.get('showBin');
-    showHex = !!config.get('showHex');
-    showStr = !!config.get('showStr');
-    showDec = !!config.get('showDec');
-    gLsb0 = !config.get('msb0');
-    gRegView = !!config.get('registerView');
-}
-
-function parseText(str: string): BaseConv | null {
+function parseText(str: string, forceHex: boolean): BaseConv | null {
     return forceHex ? parseHexdump(str) : parseNumber(str);
 }
 
@@ -52,9 +34,9 @@ function binInfo2Rows(binStr: string, width: number, lsb0: boolean): string {
         `     ${groupBy(bitsLabel(w, 4, lsb0 ? 0 : w, lsb0), 4)}`;
 }
 
-export function binInfo(v: BaseConv, lsb0: boolean, regView: boolean, maxWidth = 32): string {
+export function binInfo(v: BaseConv, lsb0: boolean, registerView: boolean, maxWidth = 32): string {
     let binStr = v.toBin();
-    if (regView) {
+    if (registerView) {
         binStr = binStr.replace(/0/g, '.');
     }
     return (v.width > maxWidth)
@@ -73,9 +55,9 @@ export function permInfo(v: BaseConv): string | null {
     return null;
 }
 
-export function hexInfo(v: BaseConv): string {
+export function hexInfo(v: BaseConv, showWidth: boolean): string {
     let hex = `Hex: ${groupBy(v.toHex(), 4)}`;
-    if (showSize) {
+    if (showWidth) {
         hex += ` (${v.width}-bit)`;
     }
     return hex;
@@ -85,37 +67,30 @@ export function strInfo(v: BaseConv): string {
     return `Str:  ${groupBy(groupBy(v.toAscii(), 1), 4)}`;
 }
 
-export function decInfo(v: BaseConv): string {
+export function decInfo(v: BaseConv, gmk: boolean): string {
     let dec = `Dec: ${v.toUint()}`;
-    if (showSize) {
+    if (gmk) {
         dec += ` (${v.toGMK()})`;
     }
     return dec + ((v.int < 0n) ? ` / ${v.toInt()}` : '');
 }
 
-export function bitPeek(v: BaseConv): vscode.Hover {
+export function bitPeek(v: BaseConv, c: BitPeekCfg): vscode.Hover {
     let peek: string[] = Array();
 
     const perm = (v.base === 8) ? permInfo(v) : null;
-    if (showBin) {
-        peek.push((perm !== null) ? perm : binInfo(v, gLsb0, gRegView));
+    if (c.showBin) {
+        peek.push((perm !== null) ? perm : binInfo(v, !c.msb0, c.registerView));
         peek.push('');
     }
-    if (showHex) {
-        peek.push(hexInfo(v));
-    }
-    if (showStr) {
-        peek.push(strInfo(v));
-    }
-    if (showDec) {
-        peek.push(decInfo(v));
-    }
+    c.showHex && peek.push(hexInfo(v, c.showWidth));
+    c.showStr && peek.push(strInfo(v));
+    c.showDec && peek.push(decInfo(v, c.showSize));
+
     if (peek.length === 0) {
         peek.push('Bit Peek: All formats disabled in settings.');
-    }
-
-    if (forceHex) {
-        peek.push('\n[Force HEX Mode]');
+    } else {
+        c.forceHex && peek.push('\n[Force HEX Mode]');
     }
 
     return new vscode.Hover({
@@ -129,15 +104,15 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
         if (event.affectsConfiguration('bit-peek')) {
-            updateConfigs();
+            cfg.update();
         }
     });
 
     const hover = vscode.languages.registerHoverProvider({scheme: '*', language: '*'}, {
         provideHover(doc: vscode.TextDocument, pos: vscode.Position, _: vscode.CancellationToken) {
             try {
-                const v: BaseConv | null = parseText(doc.getText(doc.getWordRangeAtPosition(pos)));
-                return v ? bitPeek(v) : null;
+                const v: BaseConv | null = parseText(doc.getText(doc.getWordRangeAtPosition(pos)), cfg.forceHex);
+                return v ? bitPeek(v, cfg) : null;
             } catch (e) {
                 return null;
             }
@@ -146,8 +121,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     const cmd = vscode.commands.registerCommand('bit-peek.forceHexToggle', () => {
         const config = vscode.workspace.getConfiguration('bit-peek');
-        config.update('forceHex', !forceHex, vscode.ConfigurationTarget.Global);
-        vscode.window.showInformationMessage(`Bit Peek: force HEX mode is ${forceHex ? 'enabled' : 'disabled'}.`);
+        const v = !cfg.forceHex;
+        config.update('forceHex', v, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage(`Bit Peek: force HEX mode is ${v ? 'enabled' : 'disabled'}.`);
     });
 
     context.subscriptions.push(hover);

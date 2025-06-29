@@ -1,12 +1,13 @@
 {
-    "cfg.forceHex": "Enable force HEX mode (parse all the numbers in HEX) by default.",
+    "cfg.forceHex": "Enable force HEX mode (parse all the numbers in HEX).",
     "cfg.msb0": "Use MSB0 bit numbering (Motorola style).",
     "cfg.registerView": "Display bits in register friendly view.",
     "cfg.showBin": "Show binary value in hover.",
     "cfg.showDec": "Show decimal value in hover.",
     "cfg.showHex": "Show hex value in hover.",
-    "cfg.showSize": "Show bit width and capacity (T/G/M/K).",
+    "cfg.showSize": "Show capacity (T/G/M/K) in hover.",
     "cfg.showStr": "Show ASCII characters in hover.",
+    "cfg.showWidth" : "Show data bit width.",
     "cmd.forceHexToggle": "Toggle force HEX mode (parse all the numbers in HEX)",
     "description": "Display the binary and other forms of numbers in a very easy to read format."
 }

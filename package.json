@@ -63,27 +63,27 @@
         "bit-peek.showBin": {
           "type": "boolean",
           "default": true,
-          "description": "Show binary value in hover."
+          "description": "%cfg.showBin%"
         },
         "bit-peek.showHex": {
           "type": "boolean",
           "default": true,
-          "description": "Show hex value in hover."
+          "description": "%cfg.showHex%"
         },
         "bit-peek.showStr": {
           "type": "boolean",
           "default": true,
-          "description": "Show string value in hover."
+          "description": "%cfg.showStr%"
         },
         "bit-peek.showDec": {
           "type": "boolean",
           "default": true,
-          "description": "Show decimal value in hover."
+          "description": "%cfg.showDec%"
         },
         "bit-peek.showSize": {
           "type": "boolean",
           "default": true,
-          "description": "Show size in bits/bytes."
+          "description": "%cfg.showSize%"
         }
       }
     },

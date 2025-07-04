@@ -9,6 +9,7 @@ export class BitPeekCfg {
     forceHex = false;
     msb0 = false;
     registerView = true;
+    showAsciiCode = true;
     showBin = true;
     showDec = true;
     showHex = true;

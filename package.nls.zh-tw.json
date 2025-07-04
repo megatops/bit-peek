@@ -1,13 +1,14 @@
 {
     "cfg.forceHex": "啟用強制16進位模式（以16進位解析所有數位）",
-    "cfg.msb0": "使用MSB0位编号（Motorola风格）",
-    "cfg.registerView": "針對寄存器解析優化二進位顯示",
+    "cfg.msb0": "[Bin] 使用MSB0位编号（Motorola风格）",
+    "cfg.registerView": "[Bin] 針對寄存器解析優化二進位顯示",
+    "cfg.showAsciiCode": "[Str] 顯示ASCII碼",
     "cfg.showBin": "顯示二進位值",
     "cfg.showDec": "顯示十進位值",
     "cfg.showHex": "顯示16進位值",
-    "cfg.showSize": "顯示容量值（T/G/M/K）",
+    "cfg.showSize": "[Dec] 顯示容量值（T/G/M/K）",
     "cfg.showStr": "顯示ASCII字元",
-    "cfg.showWidth" : "顯示數據位寬",
+    "cfg.showWidth" : "[Hex] 顯示數據位寬",
     "cmd.forceHexToggle": "切換強制16進位模式（以16進位解析所有數位）",
     "description": "以非常可讀易辨識的方式顯示數位的二進位和其它形式"
 }

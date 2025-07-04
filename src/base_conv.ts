@@ -1,6 +1,6 @@
 // Bit Peek for Visual Studio Code
 //
-// Copyright (C) 2024 Ding Zhaojie <zhaojie_ding@msn.com>
+// Copyright (C) 2024-2025 Ding Zhaojie <zhaojie_ding@msn.com>
 
 const U64_MAX = 0xFFFFFFFFFFFFFFFFn;
 const I64_MIN = -(U64_MAX + 1n) / 2n;
@@ -116,14 +116,29 @@ export class BaseConv {
         return perm.join(sep);
     }
 
-    public toAscii(na = '.'): string {
-        let ascii = '';
+    private toBytes(): number[] {
+        let bytes: number[] = [];
         let v = this.value;
         for (let i = 0; i < this.size; i++) {
-            const ch = Number(v & 0xFFn);
-            ascii = (isPrintable(ch) ? String.fromCharCode(ch) : na) + ascii;
+            bytes.push(Number(v & 0xFFn));
             v >>= 8n;
         }
+        return bytes.reverse();
+    }
+
+    public toAscii(na = '.'): string {
+        let ascii = '';
+        this.toBytes().forEach((ch: number) => {
+            ascii += isPrintable(ch) ? String.fromCharCode(ch) : na;
+        });
         return ascii;
+    }
+
+    public toAsciiCode(): string {
+        let code: String[] = [];
+        this.toBytes().forEach((ch: number) => {
+            code.push(ch.toString());
+        });
+        return code.join(', ');
     }
 }

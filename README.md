@@ -1,6 +1,6 @@
 # Bit Peek for Visual Studio Code
 
-Bit Peek can display various forms (binary, hexadecimal, decimal, octal, ASCII) of numbers on a simple mouse cursor hover action, in a very easy to read format. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek).
+Bit Peek can display various forms (binary, hexadecimal, decimal, octal, ASCII) of numbers on a simple mouse cursor hover action, in a very easy to read format. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek) and [Open VSX Registry](https://open-vsx.org/extension/dingzhaojie/bit-peek), compatible with Arduino IDE 2.x.
 
 ## Features
 
@@ -35,13 +35,22 @@ For octal numbers, Bit Peek will interpret the bits as UNIX file permission when
 The hover content is highly configurable to suit your needs. You can customize what information is displayed in the hover tooltip by changing the following settings:
 
 - `bit-peek.showBin`: Show binary value.
+
   - `bit-peek.registerView`: Show bits in a "register-friendly" mode.
   - `bit-peek.msb0`: Use MSB0 bit numbering (Motorola-style).
+
 - `bit-peek.showHex`: Show hexadecimal value.
+
   - `bit-peek.showWidth`: Show data bit width.
+
 - `bit-peek.showStr`: Show ASCII characters.
+
+  - `showAsciiCode`: Show ASCII code.
+
 - `bit-peek.showDec`: Show decimal value.
+
   - `bit-peek.showSize`: Show as capacity (T/G/M/K).
+
 - `bit-peek.forceHex`: Enable "Force HEX" mode.
 
 ## Limitations

@@ -94,6 +94,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), null);
         assert.strictEqual(v.toGMK(), '255 B');
         assert.strictEqual(v.toAscii(), '.');
+        assert.strictEqual(v.toAsciiCode(), '255');
 
         v = new BaseConv('0', 2);
         assert.strictEqual(v.uint, 0n);
@@ -105,6 +106,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), '---------');
         assert.strictEqual(v.toGMK(), '0 B');
         assert.strictEqual(v.toAscii(), '.');
+        assert.strictEqual(v.toAsciiCode(), '0');
 
         v = new BaseConv('FF', 16);
         assert.strictEqual(v.uint, 255n);
@@ -116,6 +118,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), '-wxrwxrwx');
         assert.strictEqual(v.toGMK(), '255 B');
         assert.strictEqual(v.toAscii(), '.');
+        assert.strictEqual(v.toAsciiCode(), '255');
     });
 
     test('16-bit conversion', () => {
@@ -129,6 +132,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), null);
         assert.strictEqual(v.toGMK(), '1.000 KiB');
         assert.strictEqual(v.toAscii(), '..');
+        assert.strictEqual(v.toAsciiCode(), '4, 0');
 
         v = new BaseConv('FFFF', 16);
         assert.strictEqual(v.uint, 65535n);
@@ -140,6 +144,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), null);
         assert.strictEqual(v.toGMK(), '63.999 KiB');
         assert.strictEqual(v.toAscii(), '..');
+        assert.strictEqual(v.toAsciiCode(), '255, 255');
     });
 
     test('32-bit conversion', () => {
@@ -153,6 +158,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), null);
         assert.strictEqual(v.toGMK(), '64.000 KiB');
         assert.strictEqual(v.toAscii(), '....');
+        assert.strictEqual(v.toAsciiCode(), '0, 1, 0, 0');
 
         v = new BaseConv('FFFFFFFF', 16);
         assert.strictEqual(v.uint, 4294967295n);
@@ -164,6 +170,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), null);
         assert.strictEqual(v.toGMK(), '4.000 GiB');
         assert.strictEqual(v.toAscii(), '....');
+        assert.strictEqual(v.toAsciiCode(), '255, 255, 255, 255');
     });
 
     test('64-bit conversion', () => {
@@ -177,6 +184,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), null);
         assert.strictEqual(v.toGMK(), '4.000 GiB');
         assert.strictEqual(v.toAscii(), '........');
+        assert.strictEqual(v.toAsciiCode(), '0, 0, 0, 1, 0, 0, 0, 0');
 
         v = new BaseConv('FFFFFFFFFFFFFFFF', 16);
         assert.strictEqual(v.uint, 18446744073709551615n);
@@ -188,6 +196,7 @@ suite('Base Converter Test Suite', () => {
         assert.strictEqual(v.toPerm(), null);
         assert.strictEqual(v.toGMK(), '16.000 EiB');
         assert.strictEqual(v.toAscii(), '........');
+        assert.strictEqual(v.toAsciiCode(), '255, 255, 255, 255, 255, 255, 255, 255');
     });
 
     test('File permission', () => {
@@ -415,7 +424,12 @@ suite('Extension Test Suite', () => {
     test('Other info display test', () => {
         assert.strictEqual(hexInfo(new BaseConv('-1', 10), true), 'Hex: FF (8-bit)');
         assert.strictEqual(hexInfo(new BaseConv('61626364', 16), true), 'Hex: 6162 6364 (32-bit)');
-        assert.strictEqual(strInfo(new BaseConv('61626364', 16)), 'Str:  a b  c d');
+        assert.strictEqual(strInfo(new BaseConv('61626364', 16), false), 'Str:  a b  c d');
+        assert.strictEqual(strInfo(new BaseConv('61626364', 16), true), 'Str:  a b  c d (97, 98, 99, 100)');
+        assert.strictEqual(strInfo(new BaseConv('6162636465666768', 16), true),
+            'Str:  a b  c d  e f  g h\n' +
+            '     (97, 98, 99, 100, 101, 102, 103, 104)'
+        );
         assert.strictEqual(decInfo(new BaseConv('FF', 16), true), 'Dec: 255 (255 B) / -1');
         assert.strictEqual(decInfo(new BaseConv('-1', 10), true), 'Dec: 255 (255 B) / -1');
         assert.strictEqual(decInfo(new BaseConv('1024', 10), true), 'Dec: 1,024 (1.000 KiB)');
@@ -443,20 +457,12 @@ suite('Hover Content Test Suite', () => {
     // use a pseudo config to run UT faster and more stable
     let cfg = new BitPeekCfg(false);
 
-    function resetConfig() {
-        cfg.forceHex = false;
-        cfg.msb0 = false;
-        cfg.registerView = true;
-        cfg.showBin = true;
-        cfg.showDec = true;
-        cfg.showHex = true;
-        cfg.showSize = true;
-        cfg.showStr = true;
-        cfg.showWidth = true;
-    }
+    teardown(() => {
+        // reset the configuration
+        cfg = new BitPeekCfg(false);
+    });
 
     function updateConfig(settings: any) {
-        resetConfig();
         for (const key in settings) {
             (cfg as any)[key] = settings[key];
         }
@@ -473,7 +479,7 @@ suite('Hover Content Test Suite', () => {
             '        4    0\n' +
             '\n' +
             'Hex: 00 (8-bit)\n' +
-            'Str:  .\n' +
+            'Str:  . (0)\n' +
             'Dec: 0 (0 B)'
         );
     });
@@ -486,7 +492,7 @@ suite('Hover Content Test Suite', () => {
             '  User   Group  Other\n' +
             '\n' +
             'Hex: 01FF (16-bit)\n' +
-            'Str:  . .\n' +
+            'Str:  . . (1, 255)\n' +
             'Dec: 511 (511 B)'
         );
     });
@@ -516,6 +522,13 @@ suite('Hover Content Test Suite', () => {
 
     test('Only ASCII', () => {
         updateConfig({showBin: false, showHex: false, showDec: false});
+        assert.strictEqual(hoverStr('4142', 16),
+            'Str:  A B (65, 66)'
+        );
+    });
+
+    test('Only ASCII, no code', () => {
+        updateConfig({showBin: false, showHex: false, showDec: false, showAsciiCode: false});
         assert.strictEqual(hoverStr('4142', 16),
             'Str:  A B'
         );

@@ -63,8 +63,12 @@ export function hexInfo(v: BaseConv, showWidth: boolean): string {
     return hex;
 }
 
-export function strInfo(v: BaseConv): string {
-    return `Str:  ${groupBy(groupBy(v.toAscii(), 1), 4)}`;
+export function strInfo(v: BaseConv, showCode: boolean, maxWidth = 32): string {
+    let str = `Str:  ${groupBy(groupBy(v.toAscii(), 1), 4)}`;
+    if (showCode) {
+        str += `${(v.width > maxWidth) ? '\n     ' : ' '}(${v.toAsciiCode()})`;
+    }
+    return str;
 }
 
 export function decInfo(v: BaseConv, gmk: boolean): string {
@@ -84,7 +88,7 @@ export function bitPeek(v: BaseConv, c: BitPeekCfg): vscode.Hover {
         peek.push('');
     }
     c.showHex && peek.push(hexInfo(v, c.showWidth));
-    c.showStr && peek.push(strInfo(v));
+    c.showStr && peek.push(strInfo(v, c.showAsciiCode));
     c.showDec && peek.push(decInfo(v, c.showSize));
 
     if (peek.length === 0) {

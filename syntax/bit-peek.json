@@ -21,7 +21,11 @@
       "name": "string.quoted"
     },
     {
-      "match": "(?<=Str: )[\\S ]+",
+      "match": "(?<=Str: )((( .){2} )*( .){1,2})(?!\\S)",
+      "name": "string.quoted"
+    },
+    {
+      "match": "(?<=\\()(\\d+, )*\\d+(?=\\))",
       "name": "string.quoted"
     },
     {

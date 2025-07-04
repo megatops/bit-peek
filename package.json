@@ -2,7 +2,7 @@
   "name": "bit-peek",
   "displayName": "Bit Peek",
   "description": "%description%",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "dingzhaojie",
   "engines": {
     "vscode": "^1.40.0"
@@ -10,6 +10,7 @@
   "license": "MIT",
   "keywords": [
     "address",
+    "arduino",
     "assembly",
     "binary",
     "bit",
@@ -79,6 +80,11 @@
           "type": "boolean",
           "default": true,
           "description": "%cfg.showStr%"
+        },
+        "bit-peek.showAsciiCode": {
+          "type": "boolean",
+          "default": true,
+          "description": "%cfg.showAsciiCode%"
         },
         "bit-peek.showDec": {
           "type": "boolean",

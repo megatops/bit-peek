@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.6
+
+- Add ASCII code display (useful when parsing IPv4 address, RGB values, etc.).
+
 ## Version 0.0.5
 
 - Add settings to configure what information is displayed. (by Oswin Rodrigues)

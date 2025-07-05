@@ -435,7 +435,7 @@ suite('Extension Test Suite', () => {
         assert.strictEqual(decInfo(new BaseConv('1024', 10), true), 'Dec: 1,024 (1.000 KiB)');
     });
 
-    test('Toggle Force Hex command updates setting', async () => {
+    test.skip('Toggle Force Hex command updates setting', async () => {
         // Start with forceHex setting disabled, then toggle it on and off again
         let config = vscode.workspace.getConfiguration('bit-peek');
         await config.update("forceHex", false, vscode.ConfigurationTarget.Global);

@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.7
+
+- Fix Visual Studio Code Server support.
+
 ## Version 0.0.6
 
 - Add ASCII code display (useful when parsing IPv4 address, RGB values, etc.).

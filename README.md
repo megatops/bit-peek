@@ -1,6 +1,6 @@
 # Bit Peek for Visual Studio Code
 
-Bit Peek can display numbers in various forms (binary, hex, decimal, octal, and ASCII) with just a simple hover of your mouse cursor. The display is clean and easy to read. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek) and [Open VSX Registry](https://open-vsx.org/extension/dingzhaojie/bit-peek), compatible with Arduino IDE 2.x.
+Bit Peek can display numbers in various forms (binary, hex, decimal, octal, and ASCII) with just a simple hover of your mouse cursor. The display is clean and easy to read. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek) and [Open VSX Registry](https://open-vsx.org/extension/dingzhaojie/bit-peek), compatible with Visual Studio Code and Arduino IDE 2.x.
 
 ## Features
 
@@ -12,13 +12,13 @@ And it supports both LSB0 (Intel-style) and MSB0 (Motorola-style) bit numbering 
 
 ![](images/msb0.png)
 
-Bit Peek will try to identify the base of numbers automatically. But if you are analyzing memory dumps, try `Bit Peek: Toggle force HEX mode` command to enforce parsing as hexadecimals:
-
-![](images/hexdump.png)
-
 For octal numbers, Bit Peek will interpret the bits as UNIX file permission when possible:
 
 ![](images/perm.png)
+
+Bit Peek will try to identify the base of numbers automatically. But if you are analyzing memory dumps, try `Bit Peek: Toggle force HEX mode` command to enforce parsing as hexadecimals:
+
+![](images/hexdump.png)
 
 ## Supported Formats
 

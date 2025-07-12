@@ -2,7 +2,7 @@
   "name": "bit-peek",
   "displayName": "Bit Peek",
   "description": "%description%",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "dingzhaojie",
   "engines": {
     "vscode": "^1.40.0"
@@ -34,7 +34,8 @@
     "Other"
   ],
   "extensionKind": [
-    "ui"
+    "ui",
+    "workspace"
   ],
   "icon": "images/icon.png",
   "activationEvents": [

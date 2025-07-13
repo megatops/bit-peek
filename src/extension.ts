@@ -5,7 +5,7 @@
 import * as vscode from 'vscode';
 
 import {BaseConv} from './base_conv';
-import {BitPeekCfg} from './config';
+import {BitPeekCfg, workspaceConfig} from './config';
 import {bitsLabel, bitsRuler, groupBy} from "./utils";
 import {parseHexdump, parseNumber} from "./parser";
 
@@ -124,9 +124,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     const cmd = vscode.commands.registerCommand('bit-peek.forceHexToggle', () => {
-        const config = vscode.workspace.getConfiguration('bit-peek');
         const v = !cfg.forceHex;
-        config.update('forceHex', v, vscode.ConfigurationTarget.Global);
+        workspaceConfig().update('forceHex', v, vscode.ConfigurationTarget.Global);
         vscode.window.showInformationMessage(`Bit Peek: force HEX mode is ${v ? 'enabled' : 'disabled'}.`);
     });
 

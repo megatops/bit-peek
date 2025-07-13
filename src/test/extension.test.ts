@@ -7,7 +7,7 @@ import * as assert from 'assert';
 
 import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo} from "../extension";
 import {BaseConv} from '../base_conv';
-import {BitPeekCfg} from '../config';
+import {BitPeekCfg, workspaceConfig} from '../config';
 
 suite('Extension Test Suite', () => {
     test('Binary display test', () => {
@@ -60,20 +60,19 @@ suite('Extension Test Suite', () => {
     });
 
     test.skip('Toggle Force Hex command updates setting', async () => {
+        const CFG_WAIT = 200;
+
         // Start with forceHex setting disabled, then toggle it on and off again
-        let config = vscode.workspace.getConfiguration('bit-peek');
-        await config.update("forceHex", false, vscode.ConfigurationTarget.Global);
-        await new Promise(resolve => setTimeout(resolve, 150));
+        await workspaceConfig().update('forceHex', false, vscode.ConfigurationTarget.Global);
+        await new Promise(resolve => setTimeout(resolve, CFG_WAIT));
 
         await vscode.commands.executeCommand('bit-peek.forceHexToggle');
-        await new Promise(resolve => setTimeout(resolve, 150));
-        config = vscode.workspace.getConfiguration('bit-peek');
-        assert.strictEqual(config.get('forceHex'), true);
+        await new Promise(resolve => setTimeout(resolve, CFG_WAIT));
+        assert.strictEqual(workspaceConfig().get('forceHex'), true);
 
         await vscode.commands.executeCommand('bit-peek.forceHexToggle');
-        await new Promise(resolve => setTimeout(resolve, 150));
-        config = vscode.workspace.getConfiguration('bit-peek');
-        assert.strictEqual(config.get('forceHex'), false);
+        await new Promise(resolve => setTimeout(resolve, CFG_WAIT));
+        assert.strictEqual(workspaceConfig().get('forceHex'), false);
     });
 });
 

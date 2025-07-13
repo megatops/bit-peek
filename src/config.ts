@@ -4,6 +4,10 @@
 
 import * as vscode from 'vscode';
 
+export function workspaceConfig() {
+    return vscode.workspace.getConfiguration('bit-peek');
+}
+
 export class BitPeekCfg {
     // keep the names exactly same as configuration name
     forceHex = false;
@@ -24,7 +28,7 @@ export class BitPeekCfg {
     }
 
     public update() {
-        let config = vscode.workspace.getConfiguration('bit-peek');
+        let config = workspaceConfig();
         Object.keys(this).forEach(key => {
             (this as any)[key] = config.get(key);
         });

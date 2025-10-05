@@ -5,44 +5,50 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 
-import {binInfo, bitPeek, decInfo, hexInfo, permInfo, strInfo} from "../extension";
+import {binInfo, bitPeek, decInfo, hexInfo, binInfoPerm, strInfo} from "../extension";
 import {BaseConv} from '../base_conv';
 import {BitPeekCfg, workspaceConfig} from '../config';
 
 suite('Extension Test Suite', () => {
     test('Binary display test', () => {
-        assert.strictEqual(binInfo(new BaseConv('55', 16), true, false),
+        assert.strictEqual(binInfo(new BaseConv('55', 16), true, false, false),
             'Bin: 0101 0101\n' +
             '     ---+ ---+\n' +
-            '        4    0');
-        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true),
+            '        4    0\n');
+        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true, false),
             'Bin: .1.1 .1.1\n' +
             '     +--- +---\n' +
-            '     0    4   ');
+            '     0    4   \n');
 
-        assert.strictEqual(binInfo(new BaseConv('55', 16), true, false, 4),
+        assert.strictEqual(binInfo(new BaseConv('55', 16), true, false, false, 4),
             'Bin:    4\n' +
             '     ---+\n' +
             '     0101\n' +
             '     0101\n' +
             '     ---+\n' +
-            '        0');
-        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true, 4),
+            '        0\n');
+        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true, false, 4),
             'Bin: 0   \n' +
             '     +---\n' +
             '     .1.1\n' +
             '     .1.1\n' +
             '     +---\n' +
-            '     4   ');
+            '     4   \n');
+
+        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true, true, 8),
+            'Bin: 0101 0101');
+        assert.strictEqual(binInfo(new BaseConv('55', 16), false, false, true, 4),
+            'Bin: 0101\n' +
+            '     0101');
     });
 
     test('File permission display test', () => {
-        assert.strictEqual(permInfo(new BaseConv('777', 8)),
+        assert.strictEqual(binInfoPerm(new BaseConv('777', 8)),
             'File Permission:\n' +
             '  r w x  r w x  r w x\n' +
             '  -----  -----  -----\n' +
-            '  User   Group  Other');
-        assert.strictEqual(permInfo(new BaseConv('7777', 8)), null);
+            '  User   Group  Other\n');
+        assert.strictEqual(binInfoPerm(new BaseConv('7777', 8)), null);
     });
 
     test('Other info display test', () => {
@@ -120,6 +126,16 @@ suite('Hover Content Test Suite', () => {
         );
     });
 
+    test('UNIX file permissions, raw bits mode', () => {
+        updateConfig({rawBits: true});
+        assert.strictEqual(hoverStr('777', 8),
+            'Bin: 0000 0001 1111 1111\n' +
+            'Hex: 01FF (16-bit)\n' +
+            'Str:  . . (1, 255)\n' +
+            'Dec: 511 (511 B)'
+        );
+    });
+
     test('All formats disabled', () => {
         updateConfig({showBin: false, showHex: false, showStr: false, showDec: false});
         assert.strictEqual(hoverStr('0'),
@@ -133,6 +149,45 @@ suite('Hover Content Test Suite', () => {
             'Bin: 1010 0101\n' +
             '     ---+ ---+\n' +
             '        4    0\n'
+        );
+    });
+
+    test('Only binary, raw bits', () => {
+        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, rawBits: true});
+        assert.strictEqual(hoverStr('A5', 16),
+            'Bin: 1010 0101'
+        );
+    });
+
+    test('Only binary, ordinary mode, group by bytes', () => {
+        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, groupByBytes: true});
+        assert.strictEqual(hoverStr('FFFF', 16),
+            'Bin: 11111111 11111111\n' +
+            '     -------+ -------+\n' +
+            '            8        0\n'
+        );
+    });
+
+    test('Only binary, raw bits, group by bytes', () => {
+        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, rawBits: true, groupByBytes: true});
+        assert.strictEqual(hoverStr('A5A5', 16),
+            'Bin: 10100101 10100101'
+        );
+    });
+
+    test('Only binary, single row', () => {
+        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, singleRow: true});
+        assert.strictEqual(hoverStr('FFFFFFFFFFFFFFFF', 16),
+            'Bin: 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111\n' +
+            '     ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+\n' +
+            '       60   56   52   48   44   40   36   32   28   24   20   16   12    8    4    0\n'
+        );
+    });
+
+    test('Only binary, single row, raw bits', () => {
+        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, singleRow: true, rawBits: true});
+        assert.strictEqual(hoverStr('FFFFFFFFFFFFFFFF', 16),
+            'Bin: 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111'
         );
     });
 

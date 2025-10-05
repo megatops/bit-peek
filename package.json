@@ -2,7 +2,7 @@
   "name": "bit-peek",
   "displayName": "Bit Peek",
   "description": "%description%",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "dingzhaojie",
   "engines": {
     "vscode": "^1.40.0"
@@ -96,6 +96,21 @@
           "type": "boolean",
           "default": true,
           "description": "%cfg.showSize%"
+        },
+        "bit-peek.rawBits": {
+          "type": "boolean",
+          "default": false,
+          "description": "%cfg.rawBits%"
+        },
+        "bit-peek.singleRow": {
+          "type": "boolean",
+          "default": false,
+          "description": "%cfg.singleRow%"
+        },
+        "bit-peek.groupByBytes": {
+          "type": "boolean",
+          "default": false,
+          "description": "%cfg.groupByBytes%"
         }
       }
     },

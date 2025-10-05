@@ -1,6 +1,8 @@
 {
     "cfg.forceHex": "Enable force HEX mode (parse all the numbers in HEX).",
+    "cfg.groupByBytes": "[Bin] Group bits by bytes (otherwise by nibbles).",
     "cfg.msb0": "[Bin] Use MSB0 bit numbering (Motorola style).",
+    "cfg.rawBits": "[Bin] Display raw binary numbers (disable all the bit rendering features).",
     "cfg.registerView": "[Bin] Display bits in register friendly view.",
     "cfg.showAsciiCode": "[Str] Show ASCII code.",
     "cfg.showBin": "Show binary value in hover.",
@@ -8,7 +10,8 @@
     "cfg.showHex": "Show hex value in hover.",
     "cfg.showSize": "[Dec] Show capacity (T/G/M/K) in hover.",
     "cfg.showStr": "Show ASCII characters in hover.",
-    "cfg.showWidth" : "[Hex] Show data bit width.",
+    "cfg.showWidth": "[Hex] Show data bit width.",
+    "cfg.singleRow": "[Bin] Display bits in a single row.",
     "cmd.forceHexToggle": "Toggle force HEX mode (parse all the numbers in HEX)",
     "description": "Display the binary and other forms of numbers in a very easy to read format."
 }

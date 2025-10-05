@@ -20,6 +20,9 @@ export class BitPeekCfg {
     showSize = true;
     showStr = true;
     showWidth = true;
+    rawBits = false;
+    singleRow = false;
+    groupByBytes = false;
 
     constructor(update = true) {
         if (update) {

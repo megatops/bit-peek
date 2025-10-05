@@ -38,6 +38,9 @@ The hover content is highly configurable to suit your needs. You can customize w
 
   - `bit-peek.registerView`: Show bits in a "register-friendly" mode.
   - `bit-peek.msb0`: Use MSB0 bit numbering (Motorola-style).
+  - `bit-peek.groupByBytes`: Group bits by bytes (otherwise by nibbles).
+  - `bit-peek.rawBits`: Display raw binary numbers (disable all the bit rendering features).
+  - `bit-peek.singleRow`: Display bits in a single row (but Visual Studio Code may still automatically wrap long strings).
 
 - `bit-peek.showHex`: Show hexadecimal value.
 

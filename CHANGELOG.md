@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.8
+
+- Add settings to customize the representation of bits.
+
 ## Version 0.0.7
 
 - Fix Visual Studio Code Server support.

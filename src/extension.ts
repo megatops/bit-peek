@@ -15,24 +15,26 @@ function parseText(str: string, forceHex: boolean): BaseConv | null {
     return forceHex ? parseHexdump(str) : parseNumber(str);
 }
 
-function binInfo1Row(binStr: string, width: number, lsb0: boolean, rawBits: boolean, group: number): string {
-    if (rawBits) {
+function binInfo1Row(binStr: string, c: BitPeekCfg, width: number, group: number): string {
+    if (c.rawBits) {
         return groupBy(binStr, group);
     }
+    const lsb0 = !c.msb0;
     return   `${groupBy(binStr, group)}\n` +
         `     ${groupBy(bitsRuler(width, group, lsb0), group)}\n` +
         `     ${groupBy(bitsLabel(width, group, 0, lsb0), group)}\n`;
 }
 
-function binInfo2Rows(binStr: string, width: number, lsb0: boolean, rawBits: boolean, group: number): string {
+function binInfo2Rows(binStr: string, c: BitPeekCfg, width: number, group: number): string {
     const w = width / 2;
     const bins = groupBy(binStr, w).split(' ');
 
-    if (rawBits) {
+    if (c.rawBits) {
         return   `${groupBy(bins[0], group)}\n` +
             `     ${groupBy(bins[1], group)}`;
     }
 
+    const lsb0 = !c.msb0;
     const ruler = groupBy(bitsRuler(w, group, lsb0), group);
     return   `${groupBy(bitsLabel(w, group, lsb0 ? w : 0, lsb0), group)}\n` +
         `     ${ruler}\n` +
@@ -42,7 +44,7 @@ function binInfo2Rows(binStr: string, width: number, lsb0: boolean, rawBits: boo
         `     ${groupBy(bitsLabel(w, group, lsb0 ? 0 : w, lsb0), group)}\n`;
 }
 
-export function binInfoPerm(v: BaseConv): string | null {
+function binInfoPerm(v: BaseConv): string | null {
     let perm = v.toPerm(' ');
     if (perm !== null) {
         return 'File Permission:\n' +
@@ -53,43 +55,45 @@ export function binInfoPerm(v: BaseConv): string | null {
     return null;
 }
 
-export function binInfo(v: BaseConv, lsb0: boolean, registerView: boolean, rawBits: boolean, maxWidth = 32, group = 4): string {
+export function binInfo(v: BaseConv, c: BitPeekCfg, maxWidth = 32): string {
     // try to parse as UNIX file permission
-    if (!rawBits && (v.base === 8)) {
+    if (!c.rawBits && (v.base === 8)) {
         const perm = binInfoPerm(v);
         if (perm !== null) {
             return perm;
         }
     }
 
+    const group = c.groupByBytes ? 8 : 4;
     let binStr = v.toBin();
-    if (!rawBits && registerView) {
+    if (!c.rawBits && c.registerView) {
         binStr = binStr.replace(/0/g, '.');
     }
+
     return 'Bin: ' + ((v.width > maxWidth)
-        ? binInfo2Rows(binStr, v.width, lsb0, rawBits, group)
-        : binInfo1Row(binStr, v.width, lsb0, rawBits, group));
+        ? binInfo2Rows(binStr, c, v.width, group)
+        : binInfo1Row(binStr, c, v.width, group));
 }
 
-export function hexInfo(v: BaseConv, showWidth: boolean): string {
+export function hexInfo(v: BaseConv, c: BitPeekCfg): string {
     let hex = `Hex: ${groupBy(v.toHex(), 4)}`;
-    if (showWidth) {
+    if (c.showWidth) {
         hex += ` (${v.width}-bit)`;
     }
     return hex;
 }
 
-export function strInfo(v: BaseConv, showCode: boolean, maxWidth = 32): string {
+export function strInfo(v: BaseConv, c: BitPeekCfg, maxWidth = 32): string {
     let str = `Str:  ${groupBy(groupBy(v.toAscii(), 1), 4)}`;
-    if (showCode) {
+    if (c.showAsciiCode) {
         str += `${(v.width > maxWidth) ? '\n     ' : ' '}(${v.toAsciiCode()})`;
     }
     return str;
 }
 
-export function decInfo(v: BaseConv, gmk: boolean): string {
+export function decInfo(v: BaseConv, c: BitPeekCfg): string {
     let dec = `Dec: ${v.toUint()}`;
-    if (gmk) {
+    if (c.showSize) {
         dec += ` (${v.toGMK()})`;
     }
     return dec + ((v.int < 0n) ? ` / ${v.toInt()}` : '');
@@ -98,10 +102,10 @@ export function decInfo(v: BaseConv, gmk: boolean): string {
 export function bitPeek(v: BaseConv, c: BitPeekCfg): vscode.Hover {
     let peek: string[] = Array();
 
-    c.showBin && peek.push(binInfo(v, !c.msb0, c.registerView, c.rawBits, c.singleRow ? 64 : 32, c.groupByBytes ? 8 : 4));
-    c.showHex && peek.push(hexInfo(v, c.showWidth));
-    c.showStr && peek.push(strInfo(v, c.showAsciiCode));
-    c.showDec && peek.push(decInfo(v, c.showSize));
+    c.showBin && peek.push(binInfo(v, c, c.singleRow ? 64 : 32));
+    c.showHex && peek.push(hexInfo(v, c));
+    c.showStr && peek.push(strInfo(v, c));
+    c.showDec && peek.push(decInfo(v, c));
 
     if (peek.length === 0) {
         peek.push('Bit Peek: All formats disabled in settings.');

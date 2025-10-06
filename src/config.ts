@@ -36,4 +36,12 @@ export class BitPeekCfg {
             (this as any)[key] = config.get(key);
         });
     }
+
+    // only for UT, will not be written to workspace config
+    public set(settings: any): BitPeekCfg {
+        for (const key in settings) {
+            (this as any)[key] = settings[key];
+        }
+        return this;
+    }
 }

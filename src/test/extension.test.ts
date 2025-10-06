@@ -5,64 +5,106 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 
-import {binInfo, bitPeek, decInfo, hexInfo, binInfoPerm, strInfo} from "../extension";
+import {binInfo, bitPeek, decInfo, hexInfo, strInfo} from "../extension";
 import {BaseConv} from '../base_conv';
 import {BitPeekCfg, workspaceConfig} from '../config';
 
-suite('Extension Test Suite', () => {
+suite('Info Test Suite', () => {
     test('Binary display test', () => {
-        assert.strictEqual(binInfo(new BaseConv('55', 16), true, false, false),
+        let cfg = new BitPeekCfg(false).set({registerView: false});
+        assert.strictEqual(binInfo(new BaseConv('55', 16), cfg),
             'Bin: 0101 0101\n' +
             '     ---+ ---+\n' +
-            '        4    0\n');
-        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true, false),
-            'Bin: .1.1 .1.1\n' +
-            '     +--- +---\n' +
-            '     0    4   \n');
-
-        assert.strictEqual(binInfo(new BaseConv('55', 16), true, false, false, 4),
+            '        4    0\n'
+        );
+        assert.strictEqual(binInfo(new BaseConv('55', 16), cfg, 4),
             'Bin:    4\n' +
             '     ---+\n' +
             '     0101\n' +
             '     0101\n' +
             '     ---+\n' +
-            '        0\n');
-        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true, false, 4),
+            '        0\n'
+        );
+        assert.strictEqual(binInfo(new BaseConv('FFFF', 16), cfg.set({groupByBytes: true})),
+            'Bin: 11111111 11111111\n' +
+            '     -------+ -------+\n' +
+            '            8        0\n'
+        );
+
+        cfg = new BitPeekCfg(false).set({msb0: true});
+        assert.strictEqual(binInfo(new BaseConv('55', 16), cfg),
+            'Bin: .1.1 .1.1\n' +
+            '     +--- +---\n' +
+            '     0    4   \n'
+        );
+        assert.strictEqual(binInfo(new BaseConv('55', 16), cfg, 4),
             'Bin: 0   \n' +
             '     +---\n' +
             '     .1.1\n' +
             '     .1.1\n' +
             '     +---\n' +
-            '     4   \n');
+            '     4   \n'
+        );
+        assert.strictEqual(binInfo(new BaseConv('FFFF', 16), cfg.set({groupByBytes: true})),
+            'Bin: 11111111 11111111\n' +
+            '     +------- +-------\n' +
+            '     0        8       \n'
+        );
 
-        assert.strictEqual(binInfo(new BaseConv('55', 16), false, true, true, 8),
+        cfg = new BitPeekCfg(false).set({rawBits: true});
+        assert.strictEqual(binInfo(new BaseConv('55', 16), cfg, 8),
             'Bin: 0101 0101');
-        assert.strictEqual(binInfo(new BaseConv('55', 16), false, false, true, 4),
+        assert.strictEqual(binInfo(new BaseConv('55', 16), cfg, 4),
             'Bin: 0101\n' +
-            '     0101');
+            '     0101'
+        );
+        assert.strictEqual(binInfo(new BaseConv('A5A5', 16), cfg.set({groupByBytes: true})),
+            'Bin: 10100101 10100101'
+        );
+
     });
 
     test('File permission display test', () => {
-        assert.strictEqual(binInfoPerm(new BaseConv('777', 8)),
+        let cfg = new BitPeekCfg(false);
+        assert.strictEqual(binInfo(new BaseConv('777', 8), cfg),
             'File Permission:\n' +
             '  r w x  r w x  r w x\n' +
             '  -----  -----  -----\n' +
-            '  User   Group  Other\n');
-        assert.strictEqual(binInfoPerm(new BaseConv('7777', 8)), null);
+            '  User   Group  Other\n'
+        );
+        assert.strictEqual(binInfo(new BaseConv('1777', 8), cfg),
+            'Bin: .... ..11 1111 1111\n' +
+            '     ---+ ---+ ---+ ---+\n' +
+            '       12    8    4    0\n'
+        );
+
+        cfg = new BitPeekCfg(false).set({rawBits: true});
+        assert.strictEqual(binInfo(new BaseConv('777', 8), cfg),
+            'Bin: 0000 0001 1111 1111'
+        );
     });
 
     test('Other info display test', () => {
-        assert.strictEqual(hexInfo(new BaseConv('-1', 10), true), 'Hex: FF (8-bit)');
-        assert.strictEqual(hexInfo(new BaseConv('61626364', 16), true), 'Hex: 6162 6364 (32-bit)');
-        assert.strictEqual(strInfo(new BaseConv('61626364', 16), false), 'Str:  a b  c d');
-        assert.strictEqual(strInfo(new BaseConv('61626364', 16), true), 'Str:  a b  c d (97, 98, 99, 100)');
-        assert.strictEqual(strInfo(new BaseConv('6162636465666768', 16), true),
+        let cfg = new BitPeekCfg(false); // with default settings
+        assert.strictEqual(hexInfo(new BaseConv('-1', 10), cfg), 'Hex: FF (8-bit)');
+        assert.strictEqual(hexInfo(new BaseConv('61626364', 16), cfg), 'Hex: 6162 6364 (32-bit)');
+        assert.strictEqual(strInfo(new BaseConv('61626364', 16), cfg), 'Str:  a b  c d (97, 98, 99, 100)');
+        assert.strictEqual(strInfo(new BaseConv('6162636465666768', 16), cfg),
             'Str:  a b  c d  e f  g h\n' +
             '     (97, 98, 99, 100, 101, 102, 103, 104)'
         );
-        assert.strictEqual(decInfo(new BaseConv('FF', 16), true), 'Dec: 255 (255 B) / -1');
-        assert.strictEqual(decInfo(new BaseConv('-1', 10), true), 'Dec: 255 (255 B) / -1');
-        assert.strictEqual(decInfo(new BaseConv('1024', 10), true), 'Dec: 1,024 (1.000 KiB)');
+        assert.strictEqual(decInfo(new BaseConv('FF', 16), cfg), 'Dec: 255 (255 B) / -1');
+        assert.strictEqual(decInfo(new BaseConv('-1', 10), cfg), 'Dec: 255 (255 B) / -1');
+        assert.strictEqual(decInfo(new BaseConv('1024', 10), cfg), 'Dec: 1,024 (1.000 KiB)');
+
+        cfg = new BitPeekCfg(false).set({showAsciiCode: false});
+        assert.strictEqual(strInfo(new BaseConv('61626364', 16), cfg), 'Str:  a b  c d');
+
+        cfg = new BitPeekCfg(false).set({showSize: false});
+        assert.strictEqual(decInfo(new BaseConv('FF', 16), cfg), 'Dec: 255 / -1');
+
+        cfg = new BitPeekCfg(false).set({showWidth: false});
+        assert.strictEqual(hexInfo(new BaseConv('61626364', 16), cfg), 'Hex: 6162 6364');
     });
 
     test.skip('Toggle Force Hex command updates setting', async () => {
@@ -90,12 +132,6 @@ suite('Hover Content Test Suite', () => {
         // reset the configuration
         cfg = new BitPeekCfg(false);
     });
-
-    function updateConfig(settings: any) {
-        for (const key in settings) {
-            (cfg as any)[key] = settings[key];
-        }
-    }
 
     function hoverStr(str: string, base = 10): String {
         return (<vscode.MarkdownString>bitPeek(new BaseConv(str, base), cfg).contents[0]).value;
@@ -126,57 +162,24 @@ suite('Hover Content Test Suite', () => {
         );
     });
 
-    test('UNIX file permissions, raw bits mode', () => {
-        updateConfig({rawBits: true});
-        assert.strictEqual(hoverStr('777', 8),
-            'Bin: 0000 0001 1111 1111\n' +
-            'Hex: 01FF (16-bit)\n' +
-            'Str:  . . (1, 255)\n' +
-            'Dec: 511 (511 B)'
-        );
-    });
-
     test('All formats disabled', () => {
-        updateConfig({showBin: false, showHex: false, showStr: false, showDec: false});
+        cfg.set({showBin: false, showHex: false, showStr: false, showDec: false});
         assert.strictEqual(hoverStr('0'),
             'Bit Peek: All formats disabled in settings.'
         );
     });
 
-    test('Only binary, ordinary mode', () => {
-        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, registerView: false});
+    test('Only binary', () => {
+        cfg.set({showHex: false, showStr: false, showDec: false});
         assert.strictEqual(hoverStr('A5', 16),
-            'Bin: 1010 0101\n' +
+            'Bin: 1.1. .1.1\n' +
             '     ---+ ---+\n' +
             '        4    0\n'
         );
     });
 
-    test('Only binary, raw bits', () => {
-        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, rawBits: true});
-        assert.strictEqual(hoverStr('A5', 16),
-            'Bin: 1010 0101'
-        );
-    });
-
-    test('Only binary, ordinary mode, group by bytes', () => {
-        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, groupByBytes: true});
-        assert.strictEqual(hoverStr('FFFF', 16),
-            'Bin: 11111111 11111111\n' +
-            '     -------+ -------+\n' +
-            '            8        0\n'
-        );
-    });
-
-    test('Only binary, raw bits, group by bytes', () => {
-        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, rawBits: true, groupByBytes: true});
-        assert.strictEqual(hoverStr('A5A5', 16),
-            'Bin: 10100101 10100101'
-        );
-    });
-
     test('Only binary, single row', () => {
-        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, singleRow: true});
+        cfg.set({showHex: false, showStr: false, showDec: false, showSize: false, singleRow: true});
         assert.strictEqual(hoverStr('FFFFFFFFFFFFFFFF', 16),
             'Bin: 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111\n' +
             '     ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+\n' +
@@ -185,64 +188,82 @@ suite('Hover Content Test Suite', () => {
     });
 
     test('Only binary, single row, raw bits', () => {
-        updateConfig({showHex: false, showStr: false, showDec: false, showSize: false, singleRow: true, rawBits: true});
+        cfg.set({showHex: false, showStr: false, showDec: false, showSize: false, singleRow: true, rawBits: true});
         assert.strictEqual(hoverStr('FFFFFFFFFFFFFFFF', 16),
             'Bin: 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111'
         );
     });
 
-    test('Only hex, no width', () => {
-        updateConfig({showBin: false, showStr: false, showDec: false, showWidth: false});
+    test('Only hex', () => {
+        cfg.set({showBin: false, showStr: false, showDec: false});
         assert.strictEqual(hoverStr('A5', 16),
-            'Hex: A5'
+            'Hex: A5 (8-bit)'
         );
     });
 
     test('Only ASCII', () => {
-        updateConfig({showBin: false, showHex: false, showDec: false});
+        cfg.set({showBin: false, showHex: false, showDec: false});
         assert.strictEqual(hoverStr('4142', 16),
             'Str:  A B (65, 66)'
         );
     });
 
-    test('Only ASCII, no code', () => {
-        updateConfig({showBin: false, showHex: false, showDec: false, showAsciiCode: false});
-        assert.strictEqual(hoverStr('4142', 16),
-            'Str:  A B'
+    test('Only decimal', () => {
+        cfg.set({showBin: false, showHex: false, showStr: false});
+        assert.strictEqual(hoverStr('A5', 16),
+            'Dec: 165 (165 B) / -91'
         );
     });
 
-    test('Only decimal, no size', () => {
-        updateConfig({showBin: false, showHex: false, showStr: false, showSize: false});
+    test('No binary', () => {
+        cfg.set({showBin: false});
         assert.strictEqual(hoverStr('A5', 16),
-            'Dec: 165 / -91'
+            'Hex: A5 (8-bit)\n' +
+            'Str:  . (165)\n' +
+            'Dec: 165 (165 B) / -91'
         );
     });
 
-    test('Hex and decimal, with sizes', () => {
-        updateConfig({showBin: false, showStr: false});
+    test('No hex', () => {
+        cfg.set({showHex: false});
         assert.strictEqual(hoverStr('A5', 16),
+            'Bin: 1.1. .1.1\n' +
+            '     ---+ ---+\n' +
+            '        4    0\n' +
+            '\n' +
+            'Str:  . (165)\n' +
+            'Dec: 165 (165 B) / -91'
+        );
+    });
+
+    test('No ASCII', () => {
+        cfg.set({showStr: false});
+        assert.strictEqual(hoverStr('A5', 16),
+            'Bin: 1.1. .1.1\n' +
+            '     ---+ ---+\n' +
+            '        4    0\n' +
+            '\n' +
             'Hex: A5 (8-bit)\n' +
             'Dec: 165 (165 B) / -91'
         );
     });
 
-    test('Binary (ordinary), hex and decimal (without sizes)', () => {
-        updateConfig({showStr: false, showWidth: false, showSize: false, registerView: false});
+    test('No dec', () => {
+        cfg.set({showDec: false});
         assert.strictEqual(hoverStr('A5', 16),
-            'Bin: 1010 0101\n' +
+            'Bin: 1.1. .1.1\n' +
             '     ---+ ---+\n' +
             '        4    0\n' +
             '\n' +
-            'Hex: A5\n' +
-            'Dec: 165 / -91'
+            'Hex: A5 (8-bit)\n' +
+            'Str:  . (165)'
         );
     });
 
     test('Force Hex', () => {
-        updateConfig({forceHex: true, showBin: false, showStr: false, showDec: false, showWidth: false});
+        cfg.set({forceHex: true, showBin: false, showStr: false, showDec: false});
         assert.strictEqual(hoverStr('A5', 16),
-            'Hex: A5\n' +
+            'Hex: A5 (8-bit)\n' +
             '\n[Force HEX Mode]'
         );
     });

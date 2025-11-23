@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.9
+
+- Fix bit number coloring issue in 2-row MSB0 display.
+
 ## Version 0.0.8
 
 - Add settings to customize the representation of bits.

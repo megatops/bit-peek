@@ -1,6 +1,6 @@
 # Bit Peek for Visual Studio Code
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/megatops/bit-peek)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/megatops/bit-peek) ![GitHub License](https://img.shields.io/github/license/megatops/bit-peek?logo=license) ![GitHub top language](https://img.shields.io/github/languages/top/megatops/bit-peek) ![GitHub contributors](https://img.shields.io/github/contributors/megatops/bit-peek) ![GitHub Repo stars](https://img.shields.io/github/stars/megatops/bit-peek) ![GitHub forks](https://img.shields.io/github/forks/megatops/bit-peek)
 
 Bit Peek can display numbers in various forms (binary, hex, decimal, octal, and ASCII) with just a simple hover of your mouse cursor. The display is clean and easy to read. Extension is available on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=dingzhaojie.bit-peek) and [Open VSX Registry](https://open-vsx.org/extension/dingzhaojie/bit-peek), compatible with Visual Studio Code and Arduino IDE 2.x.
 

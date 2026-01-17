@@ -2,7 +2,7 @@
   "name": "bit-peek",
   "displayName": "Bit Peek",
   "description": "%description%",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "publisher": "dingzhaojie",
   "engines": {
     "vscode": "^1.40.0"

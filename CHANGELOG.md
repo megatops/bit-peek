@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.10
+
+- Support Rust number format: `1234u32`, `0b1111_1111_isize`.
+
 ## Version 0.0.9
 
 - Fix bit number coloring issue in 2-row MSB0 display.

@@ -5,77 +5,81 @@
 import * as assert from 'assert';
 import {BaseConv} from '../base_conv';
 
+suite('Base Converter Size Test Suite', () => {
+    ([
+        ['0', 16, 1],
+        ['00', 16, 1],
+        ['000', 16, 2],
+        ['0000', 16, 2],
+        ['00000', 16, 4],
+        ['0000000', 16, 4],
+        ['00000000', 16, 4],
+        ['000000000', 16, 8],
+        ['000000000000', 16, 8],
+        ['000000000000000', 16, 8],
+        ['0000000000000000', 16, 8],
+        ['00000000000000000', 16, 8],
+
+        ['0', 2, 1],
+        ['00000000', 2, 1],
+        ['000000000', 2, 2],
+        ['0000000000000000', 2, 2],
+        ['00000000000000000', 2, 4],
+        ['00000000000000000000000000000000', 2, 4],
+        ['000000000000000000000000000000000', 2, 8],
+        ['0000000000000000000000000000000000000000000000000000000000000000', 2, 8],
+        ['00000000000000000000000000000000000000000000000000000000000000000', 2, 8],
+
+        ['0', 8, 1],
+        ['00', 8, 1],
+        ['000', 8, 2],
+
+        ['-1', 10, 1],
+        ['-127', 10, 1],
+        ['-128', 10, 1],
+        ['-129', 10, 2],
+        ['-32767', 10, 2],
+        ['-32768', 10, 2],
+        ['-32769', 10, 4],
+        ['-2147483647', 10, 4],
+        ['-2147483648', 10, 4],
+        ['-2147483649', 10, 8],
+        ['-9223372036854775807', 10, 8],
+        ['-9223372036854775808', 10, 8],
+
+        ['0', 10, 1],
+        ['1', 10, 1],
+        ['255', 10, 1],
+        ['256', 10, 2],
+        ['65535', 10, 2],
+        ['65536', 10, 4],
+        ['4294967295', 10, 4],
+        ['4294967296', 10, 8],
+        ['18446744073709551615', 10, 8],
+    ] as [string, number, number][]).forEach(([input, base, expected]) => {
+        test(`Convert ${input} base ${base} test`, () => {
+            assert.strictEqual((new BaseConv(input, base)).size, expected);
+        });
+    });
+});
+
+suite('Base Converter Exception Test Suite', () => {
+    ([
+        ['0', 0],
+        ['18446744073709551616', 10],
+        ['-9223372036854775809', 10],
+        ['', 10],
+        ['-', 10],
+    ] as [string, number][]).forEach(([input, base]) => {
+        test(`Convert ${input} base ${base} test`, () => {
+            assert.throws((): Number => {
+                return (new BaseConv(input, base)).size;
+            }, Error);
+        });
+    });
+});
+
 suite('Base Converter Test Suite', () => {
-    test('Size test', () => {
-        assert.strictEqual((new BaseConv('0', 16)).size, 1);
-        assert.strictEqual((new BaseConv('00', 16)).size, 1);
-        assert.strictEqual((new BaseConv('000', 16)).size, 2);
-        assert.strictEqual((new BaseConv('0000', 16)).size, 2);
-        assert.strictEqual((new BaseConv('00000', 16)).size, 4);
-        assert.strictEqual((new BaseConv('0000000', 16)).size, 4);
-        assert.strictEqual((new BaseConv('00000000', 16)).size, 4);
-        assert.strictEqual((new BaseConv('000000000', 16)).size, 8);
-        assert.strictEqual((new BaseConv('000000000000', 16)).size, 8);
-        assert.strictEqual((new BaseConv('000000000000000', 16)).size, 8);
-        assert.strictEqual((new BaseConv('0000000000000000', 16)).size, 8);
-        assert.strictEqual((new BaseConv('00000000000000000', 16)).size, 8);
-
-        assert.strictEqual((new BaseConv('0', 2)).size, 1);
-        assert.strictEqual((new BaseConv('00000000', 2)).size, 1);
-        assert.strictEqual((new BaseConv('000000000', 2)).size, 2);
-        assert.strictEqual((new BaseConv('0000000000000000', 2)).size, 2);
-        assert.strictEqual((new BaseConv('00000000000000000', 2)).size, 4);
-        assert.strictEqual((new BaseConv('00000000000000000000000000000000', 2)).size, 4);
-        assert.strictEqual((new BaseConv('000000000000000000000000000000000', 2)).size, 8);
-        assert.strictEqual((new BaseConv('0000000000000000000000000000000000000000000000000000000000000000', 2)).size, 8);
-        assert.strictEqual((new BaseConv('00000000000000000000000000000000000000000000000000000000000000000', 2)).size, 8);
-
-        assert.strictEqual((new BaseConv('0', 8)).size, 1);
-        assert.strictEqual((new BaseConv('00', 8)).size, 1);
-        assert.strictEqual((new BaseConv('000', 8)).size, 2);
-
-        assert.strictEqual((new BaseConv('-1')).size, 1);
-        assert.strictEqual((new BaseConv('-127')).size, 1);
-        assert.strictEqual((new BaseConv('-128')).size, 1);
-        assert.strictEqual((new BaseConv('-129')).size, 2);
-        assert.strictEqual((new BaseConv('-32767')).size, 2);
-        assert.strictEqual((new BaseConv('-32768')).size, 2);
-        assert.strictEqual((new BaseConv('-32769')).size, 4);
-        assert.strictEqual((new BaseConv('-2147483647')).size, 4);
-        assert.strictEqual((new BaseConv('-2147483648')).size, 4);
-        assert.strictEqual((new BaseConv('-2147483649')).size, 8);
-        assert.strictEqual((new BaseConv('-9223372036854775807')).size, 8);
-        assert.strictEqual((new BaseConv('-9223372036854775808')).size, 8);
-
-        assert.strictEqual((new BaseConv('0')).size, 1);
-        assert.strictEqual((new BaseConv('1')).size, 1);
-        assert.strictEqual((new BaseConv('255')).size, 1);
-        assert.strictEqual((new BaseConv('256')).size, 2);
-        assert.strictEqual((new BaseConv('65535')).size, 2);
-        assert.strictEqual((new BaseConv('65536')).size, 4);
-        assert.strictEqual((new BaseConv('4294967295')).size, 4);
-        assert.strictEqual((new BaseConv('4294967296')).size, 8);
-        assert.strictEqual((new BaseConv('18446744073709551615')).size, 8);
-    });
-
-    test('Exception test', () => {
-        assert.throws((): Number => {
-            return (new BaseConv('0', 0)).size;
-        }, Error);
-        assert.throws((): Number => {
-            return (new BaseConv('18446744073709551616')).size;
-        }, Error);
-        assert.throws((): Number => {
-            return (new BaseConv('-9223372036854775809')).size;
-        }, Error);
-        assert.throws((): Number => {
-            return (new BaseConv('')).size;
-        }, Error);
-        assert.throws((): Number => {
-            return (new BaseConv('-')).size;
-        }, Error);
-    });
-
     test('8-bit conversion', () => {
         let v = new BaseConv('-1');
         assert.strictEqual(v.uint, 255n);

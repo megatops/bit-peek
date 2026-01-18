@@ -4,40 +4,70 @@
 
 import * as assert from 'assert';
 import {bitsLabel, bitsRuler, groupBy} from "../utils";
+import {parseHexdump} from "../parser";
 
-suite('Utils Test Suite', () => {
-    test('Group test', () => {
-        assert.strictEqual(groupBy('1234', 1), '1 2 3 4');
-        assert.strictEqual(groupBy('1234', 2), '12 34');
-        assert.strictEqual(groupBy('1234', 3), '1 234');
-        assert.strictEqual(groupBy('1234', 4), '1234');
-        assert.strictEqual(groupBy('1234', 5), '1234');
+suite('Utils Group Test Suite', () => {
+    ([
+        ['1234', 1, '1 2 3 4'],
+        ['1234', 2, '12 34'],
+        ['1234', 3, '1 234'],
+        ['1234', 4, '1234'],
+        ['1234', 5, '1234'],
+    ] as [string, number, string][]).forEach(([input, grp, expected]) => {
+        test(`Group ${input} by ${grp}`, () => {
+            assert.strictEqual(groupBy(input, grp), expected);
+        });
+    });
+});
+
+suite('Utils Bits Ruler Test Suite', () => {
+    ([
+        [1, 4, '+'],
+        [2, 4, '-+'],
+        [3, 4, '--+'],
+        [4, 4, '---+'],
+        [5, 4, '+---+'],
+        [5, 1, '+++++'],
+    ] as [number, number, string][]).forEach(([width, grp, expected]) => {
+        test(`LSB0 Bits Ruler ${width}/${grp}`, () => {
+            assert.strictEqual(bitsRuler(width, grp), expected);
+        });
     });
 
-    test('Bits ruler test', () => {
-        assert.strictEqual(bitsRuler(1, 4), '+');
-        assert.strictEqual(bitsRuler(2, 4), '-+');
-        assert.strictEqual(bitsRuler(3, 4), '--+');
-        assert.strictEqual(bitsRuler(4, 4), '---+');
-        assert.strictEqual(bitsRuler(5, 4), '+---+');
-        assert.strictEqual(bitsRuler(5, 1), '+++++');
+    ([
+        [1, 4, '+'],
+        [2, 4, '+-'],
+        [3, 4, '+--'],
+        [4, 4, '+---'],
+        [5, 4, '+---+'],
+        [5, 1, '+++++'],
+    ] as [number, number, string][]).forEach(([width, grp, expected]) => {
+        test(`MSB0 Bits Ruler ${width}/${grp}`, () => {
+            assert.strictEqual(bitsRuler(width, grp, false), expected);
+        });
+    });
+});
 
-        assert.strictEqual(bitsRuler(1, 4, false), '+');
-        assert.strictEqual(bitsRuler(2, 4, false), '+-');
-        assert.strictEqual(bitsRuler(3, 4, false), '+--');
-        assert.strictEqual(bitsRuler(4, 4, false), '+---');
-        assert.strictEqual(bitsRuler(5, 4, false), '+---+');
-        assert.strictEqual(bitsRuler(5, 1, false), '+++++');
+suite('Utils Bits Label Test Suite', () => {
+    ([
+        [2, 0, ' 0'],
+        [3, 0, '  0'],
+        [4, 0, '   0'],
+        [8, 0, '   4   0'],
+        [16, 16, '  28  24  20  16'],
+    ] as [number, number, string][]).forEach(([width, start, expected]) => {
+        test(`LSB0 Bits Label ${width} from ${start}`, () => {
+            assert.strictEqual(bitsLabel(width, 4, start), expected);
+        });
     });
 
-    test('Bits label test', () => {
-        assert.strictEqual(bitsLabel(2, 4, 0), ' 0');
-        assert.strictEqual(bitsLabel(3, 4, 0), '  0');
-        assert.strictEqual(bitsLabel(4, 4, 0), '   0');
-        assert.strictEqual(bitsLabel(8, 4, 0), '   4   0');
-        assert.strictEqual(bitsLabel(16, 4, 16), '  28  24  20  16');
 
-        assert.strictEqual(bitsLabel(8, 4, 0, false), '0   4   ');
-        assert.strictEqual(bitsLabel(16, 4, 48, false), '48  52  56  60  ');
+    ([
+        [8, 0, '0   4   '],
+        [16, 48, '48  52  56  60  '],
+    ] as [number, number, string][]).forEach(([width, start, expected]) => {
+        test(`MSB0 Bits Label ${width} from ${start}`, () => {
+            assert.strictEqual(bitsLabel(width, 4, start, false), expected);
+        });
     });
 });

@@ -56,9 +56,9 @@ suite('Base Converter Size Test Suite', () => {
         ['4294967295', 10, 4],
         ['4294967296', 10, 8],
         ['18446744073709551615', 10, 8],
-    ] as [string, number, number][]).forEach(([input, base, expected]) => {
+    ] as [string, number, number][]).forEach(([input, base, size]) => {
         test(`Convert ${input} base ${base} test`, () => {
-            assert.strictEqual((new BaseConv(input, base)).size, expected);
+            assert.strictEqual((new BaseConv(input, base)).size, size);
         });
     });
 });
@@ -80,139 +80,187 @@ suite('Base Converter Exception Test Suite', () => {
 });
 
 suite('Base Converter Test Suite', () => {
-    test('8-bit conversion', () => {
-        let v = new BaseConv('-1');
-        assert.strictEqual(v.uint, 255n);
-        assert.strictEqual(v.int, -1n);
-        assert.strictEqual(v.toBin(), '11111111');
-        assert.strictEqual(v.toInt(), '-1');
-        assert.strictEqual(v.toUint(), '255');
-        assert.strictEqual(v.toHex(), 'FF');
-        assert.strictEqual(v.toPerm(), null);
-        assert.strictEqual(v.toGMK(), '255 B');
-        assert.strictEqual(v.toAscii(), '.');
-        assert.strictEqual(v.toAsciiCode(), '255');
+    [
+        // 8-bit conversions
+        {
+            input: '-1', base: 10,
+            expected: {
+                vuint: 255n,
+                vint: -1n,
+                bin: '11111111',
+                int: '-1',
+                uint: '255',
+                hex: 'FF',
+                perm: null,
+                gmk: '255 B',
+                ascii: '.',
+                code: '255',
+            },
+        },
+        {
+            input: '0', base: 2,
+            expected: {
+                vuint: 0n,
+                vint: 0n,
+                bin: '00000000',
+                int: '0',
+                uint: '0',
+                hex: '00',
+                perm: '---------',
+                gmk: '0 B',
+                ascii: '.',
+                code: '0',
+            },
+        },
+        {
+            input: 'FF', base: 16,
+            expected: {
+                vuint: 255n,
+                vint: -1n,
+                bin: '11111111',
+                int: '-1',
+                uint: '255',
+                hex: 'FF',
+                perm: '-wxrwxrwx',
+                gmk: '255 B',
+                ascii: '.',
+                code: '255',
+            },
+        },
 
-        v = new BaseConv('0', 2);
-        assert.strictEqual(v.uint, 0n);
-        assert.strictEqual(v.int, 0n);
-        assert.strictEqual(v.toBin(), '00000000');
-        assert.strictEqual(v.toInt(), '0');
-        assert.strictEqual(v.toUint(), '0');
-        assert.strictEqual(v.toHex(), '00');
-        assert.strictEqual(v.toPerm(), '---------');
-        assert.strictEqual(v.toGMK(), '0 B');
-        assert.strictEqual(v.toAscii(), '.');
-        assert.strictEqual(v.toAsciiCode(), '0');
+        // 16-bit conversions
+        {
+            input: '400', base: 16,
+            expected: {
+                vuint: 1024n,
+                vint: 1024n,
+                bin: '0000010000000000',
+                int: '1,024',
+                uint: '1,024',
+                hex: '0400',
+                perm: null,
+                gmk: '1.000 KiB',
+                ascii: '..',
+                code: '4, 0',
+            },
+        },
+        {
+            input: 'FFFF', base: 16,
+            expected: {
+                vuint: 65535n,
+                vint: -1n,
+                bin: '1111111111111111',
+                int: '-1',
+                uint: '65,535',
+                hex: 'FFFF',
+                perm: null,
+                gmk: '63.999 KiB',
+                ascii: '..',
+                code: '255, 255',
+            },
+        },
 
-        v = new BaseConv('FF', 16);
-        assert.strictEqual(v.uint, 255n);
-        assert.strictEqual(v.int, -1n);
-        assert.strictEqual(v.toBin(), '11111111');
-        assert.strictEqual(v.toInt(), '-1');
-        assert.strictEqual(v.toUint(), '255');
-        assert.strictEqual(v.toHex(), 'FF');
-        assert.strictEqual(v.toPerm(), '-wxrwxrwx');
-        assert.strictEqual(v.toGMK(), '255 B');
-        assert.strictEqual(v.toAscii(), '.');
-        assert.strictEqual(v.toAsciiCode(), '255');
+        // 32-bit conversions
+        {
+            input: '10000', base: 16,
+            expected: {
+                vuint: 65536n,
+                vint: 65536n,
+                bin: '00000000000000010000000000000000',
+                int: '65,536',
+                uint: '65,536',
+                hex: '00010000',
+                perm: null,
+                gmk: '64.000 KiB',
+                ascii: '....',
+                code: '0, 1, 0, 0',
+            },
+        },
+        {
+            input: 'FFFFFFFF', base: 16,
+            expected: {
+                vuint: 4294967295n,
+                vint: -1n,
+                bin: '11111111111111111111111111111111',
+                int: '-1',
+                uint: '4,294,967,295',
+                hex: 'FFFFFFFF',
+                perm: null,
+                gmk: '4.000 GiB',
+                ascii: '....',
+                code: '255, 255, 255, 255',
+            },
+        },
+
+        // 64-bit conversions
+        {
+            input: '100000000', base: 16,
+            expected: {
+                vuint: 4294967296n,
+                vint: 4294967296n,
+                bin: '0000000000000000000000000000000100000000000000000000000000000000',
+                int: '4,294,967,296',
+                uint: '4,294,967,296',
+                hex: '0000000100000000',
+                perm: null,
+                gmk: '4.000 GiB',
+                ascii: '........',
+                code: '0, 0, 0, 1, 0, 0, 0, 0',
+            },
+        },
+        {
+            input: 'FFFFFFFFFFFFFFFF', base: 16,
+            expected: {
+                vuint: 18446744073709551615n,
+                vint: -1n,
+                bin: '1111111111111111111111111111111111111111111111111111111111111111',
+                int: '-1',
+                uint: '18,446,744,073,709,551,615',
+                hex: 'FFFFFFFFFFFFFFFF',
+                perm: null,
+                gmk: '16.000 EiB',
+                ascii: '........',
+                code: '255, 255, 255, 255, 255, 255, 255, 255',
+            },
+        },
+    ].forEach((tc) => {
+        test(`Convert ${tc.input} base ${tc.base} test`, () => {
+            const v = new BaseConv(tc.input, tc.base);
+            const e = tc.expected;
+            assert.strictEqual(v.uint, e.vuint);
+            assert.strictEqual(v.int, e.vint);
+            assert.strictEqual(v.toBin(), e.bin);
+            assert.strictEqual(v.toInt(), e.int);
+            assert.strictEqual(v.toUint(), e.uint);
+            assert.strictEqual(v.toHex(), e.hex);
+            assert.strictEqual(v.toPerm(), e.perm);
+            assert.strictEqual(v.toGMK(), e.gmk);
+            assert.strictEqual(v.toAscii(), e.ascii);
+            assert.strictEqual(v.toAsciiCode(), e.code);
+        });
     });
+});
 
-    test('16-bit conversion', () => {
-        let v = new BaseConv('400', 16);
-        assert.strictEqual(v.uint, 1024n);
-        assert.strictEqual(v.int, 1024n);
-        assert.strictEqual(v.toBin(), '0000010000000000');
-        assert.strictEqual(v.toInt(), '1,024');
-        assert.strictEqual(v.toUint(), '1,024');
-        assert.strictEqual(v.toHex(), '0400');
-        assert.strictEqual(v.toPerm(), null);
-        assert.strictEqual(v.toGMK(), '1.000 KiB');
-        assert.strictEqual(v.toAscii(), '..');
-        assert.strictEqual(v.toAsciiCode(), '4, 0');
-
-        v = new BaseConv('FFFF', 16);
-        assert.strictEqual(v.uint, 65535n);
-        assert.strictEqual(v.int, -1n);
-        assert.strictEqual(v.toBin(), '1111111111111111');
-        assert.strictEqual(v.toInt(), '-1');
-        assert.strictEqual(v.toUint(), '65,535');
-        assert.strictEqual(v.toHex(), 'FFFF');
-        assert.strictEqual(v.toPerm(), null);
-        assert.strictEqual(v.toGMK(), '63.999 KiB');
-        assert.strictEqual(v.toAscii(), '..');
-        assert.strictEqual(v.toAsciiCode(), '255, 255');
+suite('Base Converter File permission Test Suite', () => {
+    [
+        ['222', '- w - - w - - w -'],
+        ['555', 'r - x r - x r - x'],
+        ['124', '- - x - w - r - -'],
+    ].forEach(([input, perm]) => {
+        test(`Convert ${input} test`, () => {
+            assert.strictEqual(new BaseConv(input, 8).toPerm(' '), perm);
+        });
     });
+});
 
-    test('32-bit conversion', () => {
-        let v = new BaseConv('10000', 16);
-        assert.strictEqual(v.uint, 65536n);
-        assert.strictEqual(v.int, 65536n);
-        assert.strictEqual(v.toBin(), '00000000000000010000000000000000');
-        assert.strictEqual(v.toInt(), '65,536');
-        assert.strictEqual(v.toUint(), '65,536');
-        assert.strictEqual(v.toHex(), '00010000');
-        assert.strictEqual(v.toPerm(), null);
-        assert.strictEqual(v.toGMK(), '64.000 KiB');
-        assert.strictEqual(v.toAscii(), '....');
-        assert.strictEqual(v.toAsciiCode(), '0, 1, 0, 0');
-
-        v = new BaseConv('FFFFFFFF', 16);
-        assert.strictEqual(v.uint, 4294967295n);
-        assert.strictEqual(v.int, -1n);
-        assert.strictEqual(v.toBin(), '11111111111111111111111111111111');
-        assert.strictEqual(v.toInt(), '-1');
-        assert.strictEqual(v.toUint(), '4,294,967,295');
-        assert.strictEqual(v.toHex(), 'FFFFFFFF');
-        assert.strictEqual(v.toPerm(), null);
-        assert.strictEqual(v.toGMK(), '4.000 GiB');
-        assert.strictEqual(v.toAscii(), '....');
-        assert.strictEqual(v.toAsciiCode(), '255, 255, 255, 255');
-    });
-
-    test('64-bit conversion', () => {
-        let v = new BaseConv('100000000', 16);
-        assert.strictEqual(v.uint, 4294967296n);
-        assert.strictEqual(v.int, 4294967296n);
-        assert.strictEqual(v.toBin(), '0000000000000000000000000000000100000000000000000000000000000000');
-        assert.strictEqual(v.toInt(), '4,294,967,296');
-        assert.strictEqual(v.toUint(), '4,294,967,296');
-        assert.strictEqual(v.toHex(), '0000000100000000');
-        assert.strictEqual(v.toPerm(), null);
-        assert.strictEqual(v.toGMK(), '4.000 GiB');
-        assert.strictEqual(v.toAscii(), '........');
-        assert.strictEqual(v.toAsciiCode(), '0, 0, 0, 1, 0, 0, 0, 0');
-
-        v = new BaseConv('FFFFFFFFFFFFFFFF', 16);
-        assert.strictEqual(v.uint, 18446744073709551615n);
-        assert.strictEqual(v.int, -1n);
-        assert.strictEqual(v.toBin(), '1111111111111111111111111111111111111111111111111111111111111111');
-        assert.strictEqual(v.toInt(), '-1');
-        assert.strictEqual(v.toUint(), '18,446,744,073,709,551,615');
-        assert.strictEqual(v.toHex(), 'FFFFFFFFFFFFFFFF');
-        assert.strictEqual(v.toPerm(), null);
-        assert.strictEqual(v.toGMK(), '16.000 EiB');
-        assert.strictEqual(v.toAscii(), '........');
-        assert.strictEqual(v.toAsciiCode(), '255, 255, 255, 255, 255, 255, 255, 255');
-    });
-
-    test('File permission', () => {
-        let v = new BaseConv('222', 8);
-        assert.strictEqual(v.uint, 146n);
-        assert.strictEqual(v.toPerm(), '-w--w--w-');
-
-        v = new BaseConv('555', 8);
-        assert.strictEqual(v.uint, 365n);
-        assert.strictEqual(v.toPerm(), 'r-xr-xr-x');
-
-        v = new BaseConv('124', 8);
-        assert.strictEqual(v.uint, 84n);
-        assert.strictEqual(v.toPerm(' '), '- - x - w - r - -');
-    });
-
-    test('Ascii print', () => {
-        assert.strictEqual((new BaseConv('1F202122', 16)).toAscii(), '. !"');
-        assert.strictEqual((new BaseConv('7c7d7e7f', 16)).toAscii(), '|}~.');
-        assert.strictEqual((new BaseConv('616263', 16)).toAscii(), '.abc');
+suite('Base Converter Ascii Print Test Suite', () => {
+    [
+        ['1F202122', '. !"'],
+        ['7c7d7e7f', '|}~.'],
+        ['616263', '.abc'],
+    ].forEach(([input, expected]) => {
+        test(`Convert ${input} test`, () => {
+            assert.strictEqual(new BaseConv(input, 16).toAscii(), expected);
+        });
     });
 });

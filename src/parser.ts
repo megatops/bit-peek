@@ -1,6 +1,6 @@
 // Bit Peek for Visual Studio Code
 //
-// Copyright (C) 2024 Ding Zhaojie <zhaojie_ding@msn.com>
+// Copyright (C) 2024-2026 Ding Zhaojie <zhaojie_ding@msn.com>
 
 import {BaseConv} from "./base_conv";
 

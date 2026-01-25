@@ -1,12 +1,13 @@
 // Bit Peek for Visual Studio Code
 //
-// Copyright (C) 2025 Ding Zhaojie <zhaojie_ding@msn.com>
+// Copyright (C) 2025-2026 Ding Zhaojie <zhaojie_ding@msn.com>
 
 import * as assert from 'assert';
 import {BaseConv} from '../base_conv';
 
 suite('Base Converter Size Test Suite', () => {
     ([
+        // input, base, expected size
         ['0', 16, 1],
         ['00', 16, 1],
         ['000', 16, 2],
@@ -65,6 +66,7 @@ suite('Base Converter Size Test Suite', () => {
 
 suite('Base Converter Exception Test Suite', () => {
     ([
+        // input, base
         ['0', 0],
         ['18446744073709551616', 10],
         ['-9223372036854775809', 10],
@@ -243,6 +245,7 @@ suite('Base Converter Test Suite', () => {
 
 suite('Base Converter File permission Test Suite', () => {
     [
+        // input, expected permission
         ['222', '- w - - w - - w -'],
         ['555', 'r - x r - x r - x'],
         ['124', '- - x - w - r - -'],
@@ -255,6 +258,7 @@ suite('Base Converter File permission Test Suite', () => {
 
 suite('Base Converter Ascii Print Test Suite', () => {
     [
+        // input, expected ascii
         ['1F202122', '. !"'],
         ['7c7d7e7f', '|}~.'],
         ['616263', '.abc'],

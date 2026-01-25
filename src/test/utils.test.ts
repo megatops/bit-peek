@@ -1,6 +1,6 @@
 // Bit Peek for Visual Studio Code
 //
-// Copyright (C) 2025 Ding Zhaojie <zhaojie_ding@msn.com>
+// Copyright (C) 2025-2026 Ding Zhaojie <zhaojie_ding@msn.com>
 
 import * as assert from 'assert';
 import {bitsLabel, bitsRuler, groupBy} from "../utils";
@@ -8,6 +8,7 @@ import {parseHexdump} from "../parser";
 
 suite('Utils Group Test Suite', () => {
     ([
+        // input, group-by, expected
         ['1234', 1, '1 2 3 4'],
         ['1234', 2, '12 34'],
         ['1234', 3, '1 234'],
@@ -22,6 +23,7 @@ suite('Utils Group Test Suite', () => {
 
 suite('Utils Bits Ruler Test Suite', () => {
     ([
+        // width, group-by, expected
         [1, 4, '+'],
         [2, 4, '-+'],
         [3, 4, '--+'],
@@ -35,6 +37,7 @@ suite('Utils Bits Ruler Test Suite', () => {
     });
 
     ([
+        // width, group-by, expected
         [1, 4, '+'],
         [2, 4, '+-'],
         [3, 4, '+--'],
@@ -50,6 +53,7 @@ suite('Utils Bits Ruler Test Suite', () => {
 
 suite('Utils Bits Label Test Suite', () => {
     ([
+        // width, start from, expected
         [2, 0, ' 0'],
         [3, 0, '  0'],
         [4, 0, '   0'],
@@ -63,6 +67,7 @@ suite('Utils Bits Label Test Suite', () => {
 
 
     ([
+        // width, start from, expected
         [8, 0, '0   4   '],
         [16, 48, '48  52  56  60  '],
     ] as [number, number, string][]).forEach(([width, start, expected]) => {

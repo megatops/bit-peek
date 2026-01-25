@@ -1,6 +1,6 @@
 // Bit Peek for Visual Studio Code
 //
-// Copyright (C) 2025 Ding Zhaojie <zhaojie_ding@msn.com>
+// Copyright (C) 2025-2026 Ding Zhaojie <zhaojie_ding@msn.com>
 
 import * as assert from 'assert';
 import {parseHexdump, parseNumber} from '../parser';

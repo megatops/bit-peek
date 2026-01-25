@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.0.11
+
+- Fix Rust support in "Force HEX" mode.
+
 ## Version 0.0.10
 
 - Support Rust number format: `1234u32`, `0b1111_1111_isize`.
